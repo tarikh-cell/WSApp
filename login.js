@@ -13,30 +13,36 @@ class Login extends React.Component{
         }
     }
 
+    logout() {
+        const response = axiosInstance.post('user/logout/blacklist/', {
+			refresh_token: localStorage.getItem('refresh_token'),
+		});
+		localStorage.removeItem('access_token');
+		localStorage.removeItem('refresh_token');
+		axiosInstance.defaults.headers['Authorization'] = null;
+        console.log(response);
+    }
+
     handleClick() {
-        console.log(this.state);
         axiosInstance
-            .post(`user/login/`, {
+            .post(`token/`, {
                 user_name: this.state.username,
                 password: this.state.password,
             })
             .then((res) => {
+                localStorage.setItem('access_token', res.data.access);
+                localStorage.setItem('refresh_token', res.data.refresh);
+                axiosInstance.defaults.headers['Authorization'] =
+                    'JWT ' + localStorage.getItem('access_token', res.data.access);
                 console.log(res);
             });
-    }
-
-    requestData() {
-        const apiUrl = 'http://127.0.0.1:8000/api/';
-        fetch(apiUrl)
-            .then((response) => response.json())
-            .then((data) => console.log(data));
     }
 
     render () {
         return(
             <View>
             <Button style={{width: 100}} onClick={this.handleClick()}><Text>Click me</Text></Button>
-            <Button style={{width: 100}} onPress={this.requestData}><Text>Click me</Text></Button>
+            <Button style={{width: 100}} onPress={this.logout}><Text>Click me</Text></Button>
             </View>
         );
     }
