@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axiosInstance from './axios';
-import { StyleSheet, View, Text, Button} from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { createEditor } from 'slate';
+import { Slate, Editable, withReact } from 'slate-react';
+import Editor from './src/components/Editor';
+import BaseDocument from './src/utils/BaseDocument';
 
-class Main extends React.Component{
+function Main (){
 
-    requestData() {
+    const [document, updateDocument] = useState(BaseDocument);
+
+    {/*requestData() {
         const apiUrl = 'http://127.0.0.1:8000/api/';
         fetch(apiUrl, {
             headers: new Headers({
@@ -17,26 +23,22 @@ class Main extends React.Component{
         })
             .then((data) => data.json())
             .then((data) => {console.log(data)})
-    }
+    }*/}
 
-    render(){
-        return (
-            <View style={styles.container}>
-                <StatusBar style="auto" />
-            </View>    
-        );
-    }
+    return (
+        <Editor document={document} onChange={updateDocument} />   
+    );
     
 }
 
 const styles = StyleSheet.create({
     container: {
-      backgroundColor: '#fff',
-      width: '95%',
-      height: '95%',
-      borderRadius: 8,
+      flex: 1,
+      width: '50%',
+      height: '70%',
       marginLeft: 65,
       marginTop: 15,
+      backgroundColor: '#fff',
     },
 });
 
