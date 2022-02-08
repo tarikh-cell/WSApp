@@ -1,15 +1,15 @@
 
 import { Button } from 'react-native';
-import { getActiveStyles, toggleStyle } from "../utils/EditorUtils";
+import { getActiveStyles, toggleStyle, toggleBlockType } from "../utils/EditorUtils";
 import { useSlateStatic } from "slate-react";
 
-const PARAGRAPH_STYLES = ["h1", "h2", "h3", "h4", "paragraph", "multiple"];
+const PARAGRAPH_STYLES = ["h1", "h2", "h3", "h4", "paragraph", "multiple", "r"];
 const CHARACTER_STYLES = ["bold", "italic", "underline", "code"];
 
 export default function Toolbar({ selection }) {
 
-    const editor = useSlateStatic();
-
+  const editor = useSlateStatic();
+  
   return (
     <div className="toolbar">
       {/* Buttons for character styles */}
@@ -18,8 +18,10 @@ export default function Toolbar({ selection }) {
           key={style}
           isActive={false}
           title={style}
-          onMouseDown={() => {
-            console.log("pheasant");
+          isActive={getActiveStyles(editor).has(style)}
+          onPress={(event) => {
+            event.preventDefault();
+            toggleBlockType(editor, style);
           }}
         />
       ))}

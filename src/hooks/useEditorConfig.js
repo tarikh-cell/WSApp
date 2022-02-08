@@ -1,5 +1,7 @@
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+
 import { DefaultElement } from "slate-react";
-import { useCallback, useRef, useState } from "react";
 
 export default function useEditorConfig(editor) {
   return { renderElement, renderLeaf };
@@ -18,6 +20,8 @@ function renderElement(props) {
       return <h3 {...attributes}>{children}</h3>;
     case "h4":
       return <h4 {...attributes}>{children}</h4>;
+    case "r":
+      return <Text {...attributes} style={{color: "green"}}>{children}</Text>
     default:
       // For the default case, we delegate to Slate's default rendering. 
       return <DefaultElement {...props} />;

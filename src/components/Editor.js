@@ -22,11 +22,12 @@ export default function Editor({ document, onChange }) {
     },
     [editor.selection, onChange, setSelection]
   );
-
+  
   return (
+    
     <Slate editor={editor} value={document} onChange={onChangeHandler}>
       <Toolbar selection={selection} />
-      <Editable renderElement={renderElement} renderLeaf={renderLeaf} />
+      <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
     </Slate>
   );
 }
