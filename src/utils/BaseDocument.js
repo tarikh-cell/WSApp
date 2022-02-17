@@ -8,7 +8,7 @@ const BaseDocument = [
         children: [{ text: "Heading 2" }],
       },
       {
-        type: "paragraph",
+        type: "Text",
         children: [{ text: "Hello World! This is my paragraph inside a sample document." },
         { text: "Bold text.", bold: true, code: true },
         { text: "Italic text.", italic: true },

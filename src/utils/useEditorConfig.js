@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
-
+import { Text } from 'react-native';
 import { DefaultElement } from "slate-react";
 
 export default function useEditorConfig(editor) {
@@ -45,6 +44,22 @@ function renderLeaf({ attributes, children, leaf }) {
   
     if (leaf.underline) {
       el = <u>{el}</u>;
+    }
+
+    if (leaf.green){
+      el = <Text style={{color: "green"}}>{el}</Text>;
+    }
+
+    if (leaf.red){
+      el = <Text style={{color: "red"}}>{el}</Text>;
+    }
+
+    if (leaf.ten){
+      el = <Text style={{fontSize: "10px"}}>{el}</Text>;
+    }
+
+    if (leaf.twelve){
+      el = <Text style={{fontSize: "12px"}}>{el}</Text>;
     }
   
     return <span {...attributes}>{el}</span>;

@@ -1,16 +1,12 @@
-import { useCallback, useRef, useState } from "react";
-
+import { useCallback, useRef, useState, useMemo } from "react";
 import { Editable, Slate, withReact } from "slate-react";
-
 import { createEditor } from "slate";
-import { useMemo } from "react";
 
 import Toolbar from "./Toolbar";
-import useEditorConfig from "../hooks/useEditorConfig";
-import useSelection from "../hooks/useSelection";
+import useEditorConfig from "../utils/useEditorConfig";
+import useSelection from "../utils/useSelection";
 
 export default function Editor({ document, onChange }) {
-
   const editor = useMemo(() => withReact(createEditor()), []);
   const { renderElement, renderLeaf } = useEditorConfig(editor);
   const [selection, setSelection] = useSelection(editor);
@@ -24,7 +20,6 @@ export default function Editor({ document, onChange }) {
   );
   
   return (
-    
     <Slate editor={editor} value={document} onChange={onChangeHandler}>
       <Toolbar selection={selection} />
       <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
