@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState, useMemo } from "react";
 import { Editable, Slate, withReact } from "slate-react";
 import { createEditor } from "slate";
+import { StyleSheet, Button, Pressable, Text, View } from 'react-native';
 
 import Toolbar from "./Toolbar";
 import useEditorConfig from "../utils/useEditorConfig";
@@ -21,8 +22,18 @@ export default function Editor({ document, onChange }) {
   
   return (
     <Slate editor={editor} value={document} onChange={onChangeHandler}>
-      <Toolbar selection={selection} />
-      <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
+      <View style={styles.container}>
+        <Toolbar selection={selection} />
+        <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
+      </View>
     </Slate>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    width: '50%',
+    backgroundColor: '#fff',
+  },
+});

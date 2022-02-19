@@ -61,6 +61,14 @@ function renderLeaf({ attributes, children, leaf }) {
     if (leaf.twelve){
       el = <Text style={{fontSize: "12px"}}>{el}</Text>;
     }
+
+    if (leaf.sansserif){
+      el = <Text style={{fontFamily: "sans-serif"}}>{el}</Text>;
+    }
+
+    if (leaf.Roboto){
+      el = <Text style={{fontFamily: "Roboto"}}>{el}</Text>;
+    }
   
     return <span {...attributes}>{el}</span>;
 }
