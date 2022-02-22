@@ -24,7 +24,9 @@ export default function Editor({ document, onChange }) {
     <Slate editor={editor} value={document} onChange={onChangeHandler}>
       <View style={styles.container}>
         <Toolbar selection={selection} />
-        <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
+        <View style={styles.editor}>
+          <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
+        </View> 
       </View>
     </Slate>
   );
@@ -34,6 +36,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     width: '50%',
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
+    height: '95%',
+    margin: '1%',
+    justifyContent: 'space-between',
   },
+  editor: {
+    backgroundColor: '#fff',
+    padding: '5%',
+    width: '90%',
+  }
 });
