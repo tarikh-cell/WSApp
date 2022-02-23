@@ -1,52 +1,74 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import { Pressable, StyleSheet, Text, View, TextInput } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from './axios';
-import { StyleSheet, Text, View, Button } from 'react-native';
 
-class Login extends React.Component{
+export default function Profile() {
+    const [user, onChangeUser] = React.useState("");
+    const [pass, onChangePass] = React.useState("");
+  
+    return (
+        <View style={styles.container}>
+          <StatusBar style="auto" />
+          <View style={styles.form}>
+            <FontAwesome name="user-o" size={150} color="black" />
+            <TextInput style={styles.input} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} />
+            <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
+            <Pressable style={styles.button} onPress={ (event) => {event.preventDefault();console.log(user + " " + pass)}}><Text style={{textAlign: 'center'}}>LogIn</Text></Pressable>
+          </View>
+        </View>
+    );
+  }
 
-    constructor(props){
-        super(props);
-        this.state = {
-            username: 'tark',
-            password: 'ppoland',
-        }
-    }
 
-    logout() {
-        const response = axiosInstance.post('user/logout/blacklist/', {
-			refresh_token: localStorage.getItem('refresh_token'),
-		});
-		localStorage.removeItem('access_token');
-		localStorage.removeItem('refresh_token');
-		axiosInstance.defaults.headers['Authorization'] = null;
-        console.log(response);
-    }
-
-    handleClick() {
-        axiosInstance
-            .post(`token/`, {
-                user_name: this.state.username,
-                password: this.state.password,
-            })
-            .then((res) => {
-                localStorage.setItem('access_token', res.data.access);
-                localStorage.setItem('refresh_token', res.data.refresh);
-                axiosInstance.defaults.headers['Authorization'] =
-                    'JWT ' + localStorage.getItem('access_token', res.data.access);
-                console.log(res);
-            });
-    }
-
-    render () {
-        return(
-            <View>
-            <Button style={{width: 100}} onClick={this.handleClick()}><Text>Click me</Text></Button>
-            <Button style={{width: 100}} onPress={this.logout}><Text>Click me</Text></Button>
-            </View>
-        );
-    }
-
+function logout() {
+    const response = axiosInstance.post('user/logout/blacklist/', {
+        refresh_token: localStorage.getItem('refresh_token'),
+    });
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    axiosInstance.defaults.headers['Authorization'] = null;
+    console.log(response);
 }
 
-export default Login;
+function handleClick() {
+    axiosInstance
+        .post(`token/`, {
+            user_name: this.state.username,
+            password: this.state.password,
+        })
+        .then((res) => {
+            localStorage.setItem('access_token', res.data.access);
+            localStorage.setItem('refresh_token', res.data.refresh);
+            axiosInstance.defaults.headers['Authorization'] =
+                'JWT ' + localStorage.getItem('access_token', res.data.access);
+            console.log(res);
+        });
+}
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      height: '95%',
+      marginTop: 15,
+      justifyContent: 'center',
+    },
+    form: {
+      alignItems: 'center',
+    }, 
+    input: {
+      borderWidth: '1px',
+      borderRadius: 5,
+      padding: '5px',
+      marginVertical: '1em',
+    }, 
+    button: {
+      backgroundColor: 'lightblue',
+      borderRadius: 5,
+      width: '8em',
+      height: '2em',
+      justifyContent: 'center'
+    }
+  });

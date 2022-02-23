@@ -4,7 +4,10 @@ import { useSlateStatic } from "slate-react";
 import { FontAwesome } from '@expo/vector-icons';
 import { useState } from 'react';
 
-const CHARACTER_STYLES = ["bold", "italic", "underline", "code"];
+import { Range, Transforms } from 'slate';
+
+const BLOCK = ['quote-left', 'list-ul', 'align-left', 'align-center', 'align-right'];
+const CHARACTER_STYLES = ["bold", "italic", "underline", "code", "link"];
 const COLORS = ["green", "red", "yellow", "blue", "black", "pink", "purple", "orange", "white", "grey"];
 const CHARACTER_SIZE = ["ten", "twelve"];
 const FONTS = ["normal","serif", "Roboto"];
@@ -15,6 +18,20 @@ export default function Toolbar({ selection }) {
   
   return (
     <View style={{marginRight: '5%', backgroundColor: '#fff', padding: '3%', width: '12em'}}>
+      <View style={styles.section}>
+        {BLOCK.map((style) => (
+          <Nos
+            key={style}
+            isActive={false}
+            title={style}
+            onPress={(event) => {
+              event.preventDefault();
+              toggleBlockType(editor, style);
+            }}
+          />
+        ))}
+      </View>
+      <View style={styles.line} />
       <View style={styles.section}>
         {CHARACTER_STYLES.map((style) => (
           <Nos
@@ -94,6 +111,46 @@ function SizeDropdown(props) {
     );
   }
 }
+
+export function toggleBlockType(editor, blockType) {
+  const currentBlockType = getTextBlockStyle(editor);
+  const changeTo = currentBlockType === blockType ? "paragraph" : blockType;
+  Transforms.setNodes(
+    editor,
+    { type: changeTo },
+     // Node filtering options supported here too. We use the same
+     // we used with Editor.nodes above.
+    { at: editor.selection, match: (n) => Editor.isBlock(editor, n) }
+  );
+}
+
+export function getTextBlockStyle(editor) {
+  const selection = editor.selection;
+  if (selection == null) {
+    return null;
+  }
+  // gives the forward-direction points in case the selection was
+  // was backwards.
+  const [start, end] = Range.edges(selection);
+
+  //path[0] gives us the index of the top-level block.
+  let startTopLevelBlockIndex = start.path[0];
+  const endTopLevelBlockIndex = end.path[0];
+
+  let blockType = null;
+  while (startTopLevelBlockIndex <= endTopLevelBlockIndex) {
+    const [node, _] = Editor.node(editor, [startTopLevelBlockIndex]);
+    if (blockType == null) {
+      blockType = node.type;
+    } else if (blockType !== node.type) {
+      return "multiple";
+    }
+    startTopLevelBlockIndex++;
+  }
+
+  return blockType;
+}
+
 
 function Font(props) {
   const { icon, isActive, title, ...otherProps } = props;
