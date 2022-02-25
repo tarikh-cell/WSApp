@@ -3,12 +3,14 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes, Link } from 'react-router-dom';
+import axiosInstance from './axios';
 
 import Main from './main.js';
 import Register from './register.js';
 import Login from './login.js';
 import CRUD from './crud.js';
 import Profile from './src/components/Profile.js';
+import File from './src/components/Files';
 
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -18,47 +20,62 @@ function toggleFullScreen() {
 }
 
 export default function App() {
-  
+  const [navOpen, setNavOpen] = useState(false);
 
   return (
     <Router>
       <View style={styles.container}>
         <StatusBar style="auto" />
-        <NavBar />
-        <Pressable onPress={ (event) => {event.preventDefault(); toggleFullScreen();}}><Text>fewbkj</Text></Pressable>
+        <NavBar size={navOpen} />
+        <Pressable onPress={ (event) => {event.preventDefault(); setNavOpen(!navOpen);}}><Text style={{color: '#fff'}}>{'>'}</Text></Pressable>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="Profile" element={<Profile />} />
           <Route path="LogIn" element={<Login />} />
+          <Route path="Files" element={<File />} />
         </Routes>
       </View>
     </Router>
   );
 }
 
-function NavBar() {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+function NavBar(props) {
+  const { size } = props;
+  const [ isLoggedIn, setLoggedIn ] = useState(localStorage.getItem('loggedIn'));
 
   return(
-    <View style={styles.toolbar}>
-      {isLoggedIn ?  <NavSlot path="/LogIn" icon="user-o" txt="LogIn" />
-        : <NavSlot path="/Profile" icon="user-o" txt="Profile" /> }
-      <NavSlot path="/" icon="power-off" txt="Mode" />
-      <NavSlot path="/" icon="folder-o" txt="Files" />
+    <View style={[styles.toolbar, { display : size ? 'none' : '' }]}>
+      { isLoggedIn ?  <NavSlot path="/Profile" icon="user-o" txt="Profile" />
+        : <NavSlot path="/LogIn" icon="user-o" txt="LogIn" /> }
+      <NavSlot path="/" icon="power-off" txt="Mode" onPress={ (event) => {event.preventDefault(); toggleFullScreen();}} />
+      <NavSlot path="/Files" icon="folder-o" txt="Files" />
+      <NavSlot path="/" icon="sign-out" txt="LogOut" onPress={ (event) => {event.preventDefault(); setLoggedIn(false); logout();}} />
+      <NavSlot path="/" icon="home" txt="Home" />
     </View>
   );
 }
 
 function NavSlot(props) {
-  const {path, icon, txt} = props;
+  const {path, icon, txt, ...otherprops} = props;
   return (
     <Link to={path} style={{ textDecoration: 'none' }}>
-          <Pressable style={styles.section}> 
+        <Pressable style={styles.section} {...otherprops} > 
           <FontAwesome name={icon} size={40} color="black" />
           <Text>{txt}</Text>   
-          </Pressable>
+        </Pressable>
     </Link>
   );
+}
+
+function logout() {
+  const response = axiosInstance.post('user/logout/blacklist/', {
+      refresh_token: localStorage.getItem('refresh_token'),
+  });
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  localStorage.setItem('loggedIn', false);
+  axiosInstance.defaults.headers['Authorization'] = null;
+  console.log(response);
 }
 
 const styles = StyleSheet.create({
@@ -70,8 +87,7 @@ const styles = StyleSheet.create({
   toolbar: {
     marginRight: '5%', 
     backgroundColor: '#fff', 
-    padding: '3%', 
-    width: '8em',
+    padding: '3%',
     height: '95%',
     marginTop: 15,
     alignItems: 'center'

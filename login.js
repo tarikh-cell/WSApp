@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from './axios';
 
-export default function Profile() {
+export default function Login() {
     const [user, onChangeUser] = React.useState("");
     const [pass, onChangePass] = React.useState("");
   
@@ -15,36 +15,26 @@ export default function Profile() {
             <FontAwesome name="user-o" size={150} color="black" />
             <TextInput style={styles.input} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} />
             <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
-            <Pressable style={styles.button} onPress={ (event) => {event.preventDefault();console.log(user + " " + pass)}}><Text style={{textAlign: 'center'}}>LogIn</Text></Pressable>
+            <Pressable style={styles.button} onPress={ (event) => {event.preventDefault(); handleClick(user, pass); }}><Text style={{textAlign: 'center'}}>LogIn</Text></Pressable>
           </View>
         </View>
     );
   }
 
-
-function logout() {
-    const response = axiosInstance.post('user/logout/blacklist/', {
-        refresh_token: localStorage.getItem('refresh_token'),
-    });
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    axiosInstance.defaults.headers['Authorization'] = null;
-    console.log(response);
-}
-
-function handleClick() {
-    axiosInstance
-        .post(`token/`, {
-            user_name: this.state.username,
-            password: this.state.password,
-        })
-        .then((res) => {
-            localStorage.setItem('access_token', res.data.access);
-            localStorage.setItem('refresh_token', res.data.refresh);
-            axiosInstance.defaults.headers['Authorization'] =
-                'JWT ' + localStorage.getItem('access_token', res.data.access);
-            console.log(res);
-        });
+function handleClick(user, pass) {
+  axiosInstance
+      .post(`token/`, {
+          user_name: user,
+          password: pass,
+      })
+      .then((res) => {
+          localStorage.setItem('access_token', res.data.access);
+          localStorage.setItem('refresh_token', res.data.refresh);
+          localStorage.setItem('loggedIn', true);
+          axiosInstance.defaults.headers['Authorization'] =
+              'JWT ' + localStorage.getItem('access_token', res.data.access);
+          console.log(res);
+      });
 }
 
 const styles = StyleSheet.create({
