@@ -3,10 +3,30 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from './axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
     const [user, onChangeUser] = React.useState("");
     const [pass, onChangePass] = React.useState("");
+    let navigate = useNavigate();
+
+    async function handleClick(user, pass) {
+      axiosInstance
+          .post(`token/`, {
+              user_name: user,
+              password: pass,
+          })
+          .then((res) => {
+              localStorage.setItem('access_token', res.data.access);
+              localStorage.setItem('refresh_token', res.data.refresh);
+              localStorage.setItem('loggedIn', true);
+              axiosInstance.defaults.headers['Authorization'] =
+                  'JWT ' + localStorage.getItem('access_token', res.data.access);
+              console.log(res);
+              
+              navigate("/");
+          });
+    }
   
     return (
         <View style={styles.container}>
@@ -20,22 +40,6 @@ export default function Login() {
         </View>
     );
   }
-
-function handleClick(user, pass) {
-  axiosInstance
-      .post(`token/`, {
-          user_name: user,
-          password: pass,
-      })
-      .then((res) => {
-          localStorage.setItem('access_token', res.data.access);
-          localStorage.setItem('refresh_token', res.data.refresh);
-          localStorage.setItem('loggedIn', true);
-          axiosInstance.defaults.headers['Authorization'] =
-              'JWT ' + localStorage.getItem('access_token', res.data.access);
-          console.log(res);
-      });
-}
 
 const styles = StyleSheet.create({
     container: {
