@@ -7,7 +7,6 @@ import axiosInstance from '../../axios';
 
 export default function File(props) {
   const [data, setData] = useState( null );
-  const [int, setInt] = useState(0);
 
   useEffect (() => {
     const loadUserList = async () => {
@@ -18,8 +17,6 @@ export default function File(props) {
       loadUserList();
   }, [])
 
-  
-
   return (
       <View style={styles.container}>
         {console.log(data)}
@@ -28,7 +25,7 @@ export default function File(props) {
           <>
             <Text>Files</Text> 
             {data.map((values, index) => (
-              <ListItem key={index} title={values['title']} />
+              <ListItem key={index} id={values['id']} title={values['title']} text={values['description']} />
             ))}
           </>
 
@@ -38,10 +35,25 @@ export default function File(props) {
   );
 }
 
+function deleteData(post) {
+    axiosInstance
+        .delete(`delete/` + post)
+        .catch(function (error) {
+            if (error.response) {
+                console.log(error.response)
+            }
+    });
+  }
+
 function ListItem(props){
-  const { title } = props;
+  const { id, title, text } = props;
   return(
-    <Text>{title}</Text>
+    <View>
+      <Text>{title}</Text>
+      <Text>e{text}</Text>
+      <Pressable onPress={(event) => {event.preventDefault(); deleteData(id);}}><Text>Delete</Text></Pressable>
+      <Pressable onPress={(event) => {event.preventDefault(); }}><Link to="/"><Text>GOOO</Text></Link></Pressable>
+    </View>
   );
 }
 
