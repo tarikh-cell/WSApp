@@ -32,15 +32,28 @@ export default function Editor({ document, onChange }) {
   }, [])
 
   function download(){
-    axiosInstance
-      .post(`create/`, {
-          title: text,
-          description: JSON.stringify(document),
-          author: userId,
-      })
-      .then((res) => {
-          console.log(res);
-      });
+    let id = localStorage.getItem("postID")
+    if (id !== null || id !== ""){
+      axiosInstance
+        .put(`edit/`+ localStorage.getItem("postID") +`/`, {
+            title: localStorage.getItem("postTitle"),
+            description: JSON.stringify(document),
+            author: userId,
+        })
+        .then((res) => {
+            console.log(res);
+        });
+    } else {
+      axiosInstance
+        .post(`create/`, {
+            title: text,
+            description: JSON.stringify(document),
+            author: userId,
+        })
+        .then((res) => {
+            console.log(res);
+        });
+      }
   }
 
   return (

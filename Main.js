@@ -6,9 +6,19 @@ import { createEditor } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 import Editor from './src/components/Editor';
 import BaseDocument from './src/utils/BaseDocument';
+import { useLocation } from 'react-router-dom';
 
 function Main (props){
-    const [document, updateDocument] = useState(BaseDocument);
+    const [document, updateDocument] = useState(getState());
+
+    function getState() {
+        const { state } = useLocation();
+        if (state === null){
+            return BaseDocument;
+        } else {
+            return JSON.parse(state);
+        }
+    }
 
     return (
         <>

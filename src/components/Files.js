@@ -2,11 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, TextInput } from 'react-native';
 
-import { Route, BrowserRouter as Router, Routes, Link } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes, Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axios';
 
 export default function File(props) {
   const [data, setData] = useState( null );
+  let navigate = useNavigate();
 
   useEffect (() => {
     const loadUserList = async () => {
@@ -17,9 +18,26 @@ export default function File(props) {
       loadUserList();
   }, [])
 
+  function go(id, title, text) {
+    localStorage.setItem("postID", id);
+    localStorage.setItem("postTitle", title);
+    navigate("/", {state : text});
+  }
+
+  function ListItem(props){
+    const { id, title, text } = props;
+    return(
+      <View>
+        <Text>{title}</Text>
+        <Text>{text}</Text>
+        <Pressable onPress={(event) => {event.preventDefault(); deleteData(id);}}><Text>Delete</Text></Pressable>
+        <Pressable onPress={(event) => {event.preventDefault(); go(id, title, text);}}><Text>GOOO</Text></Pressable>
+      </View>
+    );
+  }
+
   return (
       <View style={styles.container}>
-        {console.log(data)}
         { data !== null ? 
           
           <>
@@ -45,17 +63,7 @@ function deleteData(post) {
     });
   }
 
-function ListItem(props){
-  const { id, title, text } = props;
-  return(
-    <View>
-      <Text>{title}</Text>
-      <Text>e{text}</Text>
-      <Pressable onPress={(event) => {event.preventDefault(); deleteData(id);}}><Text>Delete</Text></Pressable>
-      <Pressable onPress={(event) => {event.preventDefault(); }}><Link to="/"><Text>GOOO</Text></Link></Pressable>
-    </View>
-  );
-}
+
 
 const styles = StyleSheet.create({
   container: {
