@@ -10,6 +10,7 @@ import useEditorConfig from "../utils/useEditorConfig";
 import useSelection from "../utils/useSelection";
 import { TextInput } from "react-native-web";
 
+
 export default function Editor({ document, onChange }) {
   const editor = useMemo(() => withReact(createEditor()), []);
   const { renderElement, renderLeaf } = useEditorConfig(editor);
@@ -33,7 +34,7 @@ export default function Editor({ document, onChange }) {
 
   function download(){
     let id = localStorage.getItem("postID")
-    if (id !== null || id !== ""){
+    if (id !== null){
       axiosInstance
         .put(`edit/`+ localStorage.getItem("postID") +`/`, {
             title: localStorage.getItem("postTitle"),

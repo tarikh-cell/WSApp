@@ -1,38 +1,63 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import axiosInstance from './axios';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
+import { Link } from 'react-router-dom';
+import { FontAwesome } from '@expo/vector-icons';
 
-class Register extends React.Component{
-
-    constructor(props){
-        super(props);
-        this.state = {
-            email: 'taariq_best@live.com',
-            username: 'tark',
-            password: 'ppoland',
-        }
+export default function Register() {
+    const [email, onChangeEmail] = React.useState("");
+    const [user, onChangeUser] = React.useState("");
+    const [pass, onChangePass] = React.useState("");
+    
+    function register() {
+      axiosInstance
+          .post(`user/register/`, {
+              email: email,
+              user_name: user,
+              password: pass,
+          })
+          .then((res) => {
+              console.log(res);
+          });
     }
-
-    handleClick() {
-        console.log(this.state);
-        axiosInstance
-            .post(`user/register/`, {
-                email: this.state.email,
-                user_name: this.state.username,
-                password: this.state.password,
-            })
-            .then((res) => {
-                console.log(res);
-            });
-    }
-
-    render () {
-        return(
-            <Button style={{width: 100}} onClick={this.handleClick}><Text>Click me</Text></Button>
-        );
-    }
+    
+    return(
+        <View style={styles.container}>
+            <View style={styles.form}>
+                <FontAwesome name="user-o" size={150} color="black" />
+                <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeEmail} value={email} />
+                <TextInput style={styles.input} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} />
+                <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
+                <Pressable style={styles.button} onPress={ (event) => {event.preventDefault(); register(); }}><Text style={{textAlign: 'center'}}>Register</Text></Pressable>         
+            </View>
+        </View>
+    );
 
 }
 
-export default Register;
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      height: '95%',
+      marginTop: 15,
+      justifyContent: 'center',
+    },
+    form: {
+      alignItems: 'center',
+    }, 
+    input: {
+      borderWidth: '1px',
+      borderRadius: 5,
+      padding: '5px',
+      marginVertical: '1em',
+    }, 
+    button: {
+      backgroundColor: 'lightblue',
+      borderRadius: 5,
+      width: '8em',
+      height: '2em',
+      justifyContent: 'center'
+    }
+  });

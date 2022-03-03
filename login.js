@@ -3,7 +3,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from './axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login() {
     const [user, onChangeUser] = React.useState("");
@@ -36,6 +36,7 @@ export default function Login() {
             <TextInput style={styles.input} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} />
             <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
             <Pressable style={styles.button} onPress={ (event) => {event.preventDefault(); handleClick(user, pass); }}><Text style={{textAlign: 'center'}}>LogIn</Text></Pressable>
+            <Text>Don't have an account? <Link to="/Register">Register</Link></Text>          
           </View>
         </View>
     );
