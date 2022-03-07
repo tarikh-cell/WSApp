@@ -58,10 +58,24 @@ function renderLeaf({ attributes, children, leaf }) {
 
     if (leaf.ten){el = <Text style={{fontSize: "10px"}}>{el}</Text>;}
     if (leaf.twelve){el = <Text style={{fontSize: "12px"}}>{el}</Text>;}
+    if (leaf.fourteen){el = <Text style={{fontSize: "14px"}}>{el}</Text>;}
+    if (leaf.sixteen){el = <Text style={{fontSize: "16px"}}>{el}</Text>;}
+    if (leaf.eighteen){el = <Text style={{fontSize: "18px"}}>{el}</Text>;}
+    if (leaf.twenty){el = <Text style={{fontSize: "20px"}}>{el}</Text>;}
+    if (leaf.twentytwo){el = <Text style={{fontSize: "22px"}}>{el}</Text>;}
+    if (leaf.twentyfour){el = <Text style={{fontSize: "24px"}}>{el}</Text>;}
+    if (leaf.thirtytwo){el = <Text style={{fontSize: "32px"}}>{el}</Text>;}
+    if (leaf.sixtyfour){el = <Text style={{fontSize: "64px"}}>{el}</Text>;}
+    if (leaf.onehundredtwentyeight){el = <Text style={{fontSize: "128px"}}>{el}</Text>;}
 
     if (leaf.normal){el = <Text style={{fontFamily: "sans-serif"}}>{el}</Text>;}
     if (leaf.serif){el = <Text style={{fontFamily: "sans-serif"}}>{el}</Text>;}
     if (leaf.Roboto){el = <Text style={{fontFamily: "Roboto"}}>{el}</Text>;}
+    if (leaf.Montserrat){el = <Text style={{fontFamily: "Montserrat"}}>{el}</Text>;}
+    if (leaf.OpenSans){el = <Text style={{fontFamily: "OpenSans"}}>{el}</Text>;}
+    if (leaf.Calibri){el = <Text style={{fontFamily: "Calibri"}}>{el}</Text>;}
+    if (leaf.TimesNewRoman){el = <Text style={{fontFamily: "TimesNewRoman"}}>{el}</Text>;}
+    if (leaf.Arial){el = <Text style={{fontFamily: "Arial"}}>{el}</Text>;}
   
     return <span {...attributes}>{el}</span>;
 }

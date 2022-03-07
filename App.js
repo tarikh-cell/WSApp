@@ -1,19 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useMemo } from 'react';
+import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
-import { Route, BrowserRouter as Router, Routes, Link } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { useFonts } from 'expo-font';
 
 import Main from './main.js';
 import Register from './register.js';
 import Login from './login.js';
-import CRUD from './crud.js';
 import Profile from './src/components/Profile.js';
 import File from './src/components/Files';
 import NavBar from './src/components/NavBar';
 
 export default function App() {
   const [navOpen, setNavOpen] = useState(false);
+
+  const [loaded] = useFonts({
+    Arial: require('./assests/fonts/arial.ttf'),
+    Calibri: require('./assests/fonts/CALIBRI.ttf'),
+    Montserrat: require('./assests/fonts/Montserrat.ttf'),
+    OpenSans: require('./assests/fonts/OpenSans.ttf'),
+    TimesNewRoman: require('./assests/fonts/times.ttf'),
+  });
 
   //window.onunload = () => {
   //  window.localStorage.clear()
@@ -23,7 +30,7 @@ export default function App() {
     <Router>
       <View style={styles.container}>
         <NavBar size={navOpen} />
-        <Pressable onPress={ (event) => {event.preventDefault(); setNavOpen(!navOpen);}}><Text style={{color: '#fff'}}>{'>'}</Text></Pressable>
+        <Pressable onPress={ (event) => {event.preventDefault(); setNavOpen(!navOpen);}}><Text>{'>'}</Text></Pressable>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="Profile" element={<Profile />} />
@@ -39,7 +46,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
     flexDirection: 'row',
+    backgroundColor: '#F5F5F5'
   }
 });

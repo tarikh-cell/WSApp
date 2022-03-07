@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://127.0.0.1:8000/api/';
+const baseURL = 'https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/';
 
 const axiosInstance = axios.create({
 	baseURL: baseURL,

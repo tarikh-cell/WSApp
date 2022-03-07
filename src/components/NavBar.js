@@ -7,7 +7,7 @@ import axiosInstance from '../../axios';
 
 import { FontAwesome } from '@expo/vector-icons';
 
-export default function NavBar({size, load}) {
+export default function NavBar({size}) {
     const [ isLoggedIn, setLoggedIn ] = useState(null);
 
     useEffect( () => {
@@ -19,7 +19,7 @@ export default function NavBar({size, load}) {
         { isLoggedIn === 'true' ? <NavSlot path="/Profile"  icon="user-o" txt="Profile" /> : <NavSlot path="/LogIn"  icon="sign-in" txt="LogIn" />} 
         <NavSlot path="/" icon="power-off" txt="Mode" onPress={ (event) => {event.preventDefault(); toggleFullScreen();}} />
         <NavSlot path="/Files" icon="folder-o" txt="Files" />
-        <NavSlot path="/" icon="sign-out" txt="LogOut" onPress={ (event) => {event.preventDefault(); setLoggedIn(false); logout();}} />
+        { isLoggedIn === 'true' ?  <NavSlot path="/" icon="sign-out" txt="LogOut" onPress={ (event) => {event.preventDefault(); setLoggedIn(false); logout();}} /> : <></>}
         <NavSlot path="/" icon="home" txt="Home" />
       </View>
     );
@@ -53,19 +53,13 @@ export default function NavBar({size, load}) {
     elem.requestFullscreen();
   }
   
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#000',
-      flexDirection: 'row',
-    },
+const styles = StyleSheet.create({
     toolbar: {
-      marginRight: '5%', 
       backgroundColor: '#fff', 
       padding: '3%',
-      height: '95%',
-      marginTop: 15,
-      alignItems: 'center'
+      alignItems: 'center',
+      borderRightColor: '#E5E5E5',
+      borderRightWidth: '1px',
     }, 
     section: {
       marginBottom: '2em',

@@ -12,7 +12,7 @@ export default function File(props) {
   useEffect (() => {
     const loadUserList = async () => {
       if (localStorage.getItem('loggedIn') === 'true'){
-        const apiUrl = 'http://127.0.0.1:8000/api/';
+        const apiUrl = 'https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/';
         axiosInstance.get(apiUrl).then( (res) => setData(res.data)) }
       }
       loadUserList();
@@ -27,7 +27,7 @@ export default function File(props) {
   function ListItem(props){
     const { id, title, text } = props;
     return(
-      <View>
+      <View style={{flexDirection: 'row', width: '70%'}}>
         <Text>{title}</Text>
         <Text>{text}</Text>
         <Pressable onPress={(event) => {event.preventDefault(); deleteData(id);}}><Text>Delete</Text></Pressable>

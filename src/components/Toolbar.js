@@ -9,15 +9,16 @@ import { Range, Transforms } from 'slate';
 const BLOCK = ['quote-left', 'list-ul', 'align-left', 'align-center', 'align-right'];
 const CHARACTER_STYLES = ["bold", "italic", "underline", "code", "link"];
 const COLORS = ["green", "red", "yellow", "blue", "black", "pink", "purple", "orange", "white", "grey"];
-const CHARACTER_SIZE = ["ten", "twelve"];
-const FONTS = ["normal","serif", "Roboto"];
+const CHARACTER_SIZE = ["ten", "twelve", "fourteen", "sixteen", "eighteen", "twenty", "twentytwo", "twentyfour", "thirtytwo", "sixtyfour", "onehundredtwentyeight"];
+const FONTS = ["normal","serif", "Roboto", "Montserrat", "OpenSans", "Arial", "TimesNewRoman", "Calibri"];
 
 export default function Toolbar({ selection }) {
   const editor = useSlateStatic();
   const [open, setOpen] = useState(false);
   
   return (
-    <View style={{marginRight: '5%', backgroundColor: '#fff', padding: '3%', width: '12em'}}>
+    <>
+      <View style={styles.line} />
       <View style={styles.section}>
         {BLOCK.map((style) => (
           <Nos
@@ -75,7 +76,7 @@ export default function Toolbar({ selection }) {
           />
         ))}
       </View>
-    </View>
+    </>
   );
 }
 
