@@ -7,7 +7,7 @@ import axiosInstance from '../../axios';
 
 import { FontAwesome } from '@expo/vector-icons';
 
-export default function NavBar({size}) {
+export default function NavBar() {
     const [ isLoggedIn, setLoggedIn ] = useState(null);
 
     useEffect( () => {
@@ -15,7 +15,7 @@ export default function NavBar({size}) {
     }, [isLoggedIn])
   
     return(
-      <View style={[styles.toolbar, { display : size ? 'none' : '' }]}>
+      <View style={styles.toolbar}>
         { isLoggedIn === 'true' ? <NavSlot path="/Profile"  icon="user-o" txt="Profile" /> : <NavSlot path="/LogIn"  icon="sign-in" txt="LogIn" />} 
         <NavSlot path="/" icon="power-off" txt="Mode" onPress={ (event) => {event.preventDefault(); toggleFullScreen();}} />
         <NavSlot path="/Files" icon="folder-o" txt="Files" />
@@ -30,8 +30,8 @@ export default function NavBar({size}) {
     return (
       <Link to={path} style={{ textDecoration: 'none' }}>
           <Pressable style={styles.section} {...otherprops} > 
-            <FontAwesome name={icon} size={40} color="black" />
-            <Text>{txt}</Text>   
+            <FontAwesome name={icon} size={30} color="black" />
+            <Text style={styles.text}></Text>   
           </Pressable>
       </Link>
     );
@@ -55,14 +55,17 @@ export default function NavBar({size}) {
   
 const styles = StyleSheet.create({
     toolbar: {
-      backgroundColor: '#fff', 
-      padding: '3%',
+      padding: '1%',
       alignItems: 'center',
       borderRightColor: '#E5E5E5',
       borderRightWidth: '1px',
+      backgroundColor: '#fff'
     }, 
     section: {
       marginBottom: '2em',
+    },
+    text: {
+      color: 'grey',
     }
   });
   

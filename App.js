@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { useFonts } from 'expo-font';
+import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 
 import Main from './main.js';
 import Register from './register.js';
@@ -10,9 +11,9 @@ import Login from './login.js';
 import Profile from './src/components/Profile.js';
 import File from './src/components/Files';
 import NavBar from './src/components/NavBar';
+import SideBar from './src/components/SideBar.js';
 
 export default function App() {
-  const [navOpen, setNavOpen] = useState(false);
 
   const [loaded] = useFonts({
     Arial: require('./assests/fonts/arial.ttf'),
@@ -28,16 +29,15 @@ export default function App() {
 
   return (
     <Router>
-      <View style={styles.container}>
-        <NavBar size={navOpen} />
-        <Pressable onPress={ (event) => {event.preventDefault(); setNavOpen(!navOpen);}}><Text>{'>'}</Text></Pressable>
+      <View style={styles.container}>        
+        <NavBar />
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="Profile" element={<Profile />} />
           <Route path="LogIn" element={<Login />} />
           <Route path="Files" element={<File />} />
           <Route path="Register" element={<Register />} />
-        </Routes>
+        </Routes>    
       </View>
     </Router>
   );
@@ -47,6 +47,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#F5F5F5'
-  }
+    backgroundColor: '#F5F5F5',
+  },
 });

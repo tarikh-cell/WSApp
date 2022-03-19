@@ -1,12 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, TextInput } from 'react-native';
-
+import { Pressable, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Route, BrowserRouter as Router, Routes, Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axios';
+import { EvilIcons } from '@expo/vector-icons';
 
 export default function File(props) {
   const [data, setData] = useState( null );
+  
   let navigate = useNavigate();
 
   useEffect (() => {
@@ -26,14 +26,28 @@ export default function File(props) {
 
   function ListItem(props){
     const { id, title, text } = props;
+    const [hover, setHover] = useState( false );
+
     return(
-      <View style={{flexDirection: 'row', width: '70%'}}>
-        <Text>{title}</Text>
-        <Text>{text}</Text>
-        <Pressable onPress={(event) => {event.preventDefault(); deleteData(id);}}><Text>Delete</Text></Pressable>
-        <Pressable onPress={(event) => {event.preventDefault(); go(id, title, text);}}><Text>GOOO</Text></Pressable>
+      <View style={{flexDirection: 'row', width: '70%', justifyContent: 'space-between', borderBottomWidth: 0.1, borderColor: 'lightgrey', padding: '1em', backgroundColor: hover ? 'lightgrey' : '#fff'}}>
+        <TouchableOpacity style={{width: '95%', flexDirection: 'row'}} onPress={(event) => {event.preventDefault(); go(id, title, text);}} onMouseEnter={() => {setHover(true)}} onMouseLeave={() => setHover(false)} >
+          <Text style={[styles.text, {width: '20%'}]}>{title}</Text>
+          <Text style={[styles.text, {width: '55%'}]}>{text}</Text>
+          {getText(text)}
+          <Text style={[styles.text, {width: '20%'}]}>{text.length}</Text>
+        </TouchableOpacity>
+        <Pressable style={{width: '10%'}} onPress={(event) => {event.preventDefault(); deleteData(id);}}><EvilIcons name="trash" size={24} color="blue" /></Pressable>
       </View>
     );
+  }
+
+  function getText(text){
+    let txt = '';
+    for (let i = 0; i < text.length; i++){
+      if (text.charAt(i).match(/^[0-9a-z]+$/)){
+        txt += text.charAt(i);
+      }
+    }
   }
 
   return (
@@ -41,7 +55,13 @@ export default function File(props) {
         { data !== null ? 
           
           <>
-            <Text>Files</Text> 
+            <Text style={{textAlign: 'left', width: '70%', fontWeight: '300', fontSize: '30px', marginBottom: '1em'}}>My Files</Text> 
+            <View style={{flexDirection: 'row', width: '70%', justifyContent: 'space-between', padding: '1em', backgroundColor: '#fff', borderTopStartRadius: '5px'}}>
+              <Text style={[styles.text, {width: '20%'}]}>Name</Text>
+              <Text style={[styles.text, {width: '50%'}]}>Preview</Text>
+              <Text style={[styles.text, {width: '20%'}]}>Size</Text>
+              <Text style={{color: 'white', width: '10%'}}>Delete</Text>
+            </View>
             {data.map((values, index) => (
               <ListItem key={index} id={values['id']} title={values['title']} text={values['description']} />
             ))}
@@ -67,9 +87,14 @@ function deleteData(post) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     height: '95%',
     marginTop: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '95%',
+  },
+  text: {
+    fontWeight: '400',
+    fontSize: '16px',
   }
 });

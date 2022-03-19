@@ -7,6 +7,7 @@ import {
 
 } from 'react-native-chart-kit';
 import axiosInstance from '../../axios';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function Profile() {
   const [userId, setUserId] = useState("");
@@ -15,9 +16,9 @@ export default function Profile() {
   const [times, onChangeTimes] = useState([]);
 
   const chartConfig = {
-    backgroundGradientFrom: '#1E2923',
-    backgroundGradientTo: '#08130D',
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`
+    backgroundGradientFrom: '#F5F5F5',
+    backgroundGradientTo: '#F5F5F5',
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`
   }
 
   useEffect(() => {
@@ -44,24 +45,31 @@ export default function Profile() {
 
   return (
       <View style={styles.container}>
-        <LineChart
-          data={{
-            labels: dates,
-            datasets: [{
-              data: times
-            }]
-          }}
-          width={400} // from react-native
-          height={220}
-          chartConfig={chartConfig}
-          bezier
-          style={{
-            marginVertical: 8,
-            borderRadius: 16
-          }}
-        />
-        <TextInput style={styles.input} placeholder="Notes" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeText} value={text} />
-        <Pressable onPress={ (event) => {event.preventDefault(); saveNote();}}><Text>Save</Text></Pressable>
+        <FontAwesome name="user" size={90} color="black" />
+        <Text>User Profile:</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '80%'}}>
+          <LineChart
+            data={{
+              labels: dates,
+              datasets: [{
+                data: times
+              }]
+            }}
+            width={400} // from react-native
+            height={220}
+            chartConfig={chartConfig}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16
+            }}
+          />
+          <View style={styles.note}>
+            <Text style={styles.title}>Notes:</Text>
+            <TextInput style={styles.input} placeholder="Notes" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeText} value={text} />
+            <Pressable style={{alignSelf: 'center'}} onPress={ (event) => {event.preventDefault(); saveNote();}}><Text>Save</Text></Pressable>
+          </View>
+        </View>
       </View>
   );
 }
@@ -72,6 +80,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     height: '95%',
     marginTop: 15,
+    alignItems: 'center',
     justifyContent: 'center',
+    padding: '5em',
+    width: '90%'
+  },
+  note: {
+    height: '10em',
+    borderColor: 'lightgrey',
+    borderWidth: '0.1px',
+    borderRadius: '8px'
+  },
+  title: {
+      borderBottomWidth: '0.1px',
+      borderBottomColor: 'grey',
+      padding: '1px',
   }
 });

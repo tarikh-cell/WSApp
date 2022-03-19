@@ -1,14 +1,13 @@
 import { useCallback, useRef, useState, useMemo, useEffect } from "react";
 import { Editable, Slate, withReact } from "slate-react";
 import { createEditor } from "slate";
-import { StyleSheet, ScrollView, Pressable, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, Pressable, Text, View, Dimensions, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from "../../axios";
 
 import Toolbar from "./Toolbar";
 import useEditorConfig from "../utils/useEditorConfig";
 import useSelection from "../utils/useSelection";
-import { TextInput } from "react-native-web";
 let ScreenHeight = Dimensions.get("window").height;
 
 export default function Editor({ document, onChange }) {
@@ -17,6 +16,7 @@ export default function Editor({ document, onChange }) {
   const [selection, setSelection] = useSelection(editor);
   const [text, onChangeText] = useState("");
   const [userId, setUserId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const onChangeHandler = useCallback(
     (document) => {
@@ -33,7 +33,7 @@ export default function Editor({ document, onChange }) {
   }, [])
 
   function download(){
-    let id = localStorage.getItem("postID")
+    let id = localStorage.getItem("postID");
     if (id !== null){
       axiosInstance
         .put(`edit/`+ localStorage.getItem("postID") +`/`, {
@@ -59,35 +59,43 @@ export default function Editor({ document, onChange }) {
 
   return (
     <Slate editor={editor} value={document} onChange={onChangeHandler}>
-
+      
       <View style={styles.container}>
         <Text>Save To DataBase</Text>
-        <View style={{flexDirection: 'row'}}>
-          <TextInput style={styles.search} onChangeText={onChangeText} value={text} />
-          <Pressable onPress={(event) => {event.preventDefault(); download();}}>
-            <FontAwesome name="download" size={15} color="black" />
-          </Pressable> 
-        </View>
+        
+          { modalVisible ? 
+          <View style={{flexDirection: 'row'}}>
+            <TextInput style={styles.search} onChangeText={onChangeText} value={text} /> 
+            <Pressable onPress={(event) => {event.preventDefault(); download(); setModalVisible(false);}}>
+              <FontAwesome name="download" size={15} color="black" />
+            </Pressable> 
+          </View> : 
+          <Pressable style={{alignSelf: 'center', padding: '4px'}} onPress={(event) => {event.preventDefault(); setModalVisible(true);}}><FontAwesome name="download" size={20} color="black" /></Pressable>
+          }
+
         <Toolbar selection={selection} />
       </View>
 
       <ScrollView style={styles.editor}>
         <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
       </ScrollView> 
-        
+
+      
+
     </Slate>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
+    height: '95%',
     backgroundColor: '#fff', 
     padding: '1%', 
     width: '13em',
     borderColor: 'lightgrey',
     borderWidth: '1px',
-    alignSelf: 'center',
+    alignSelf: 'flex-end',
+    margin: '20px',
   },
   editor: {
     height: ScreenHeight,
@@ -96,8 +104,10 @@ const styles = StyleSheet.create({
     padding: '5%',
     borderLeftColor: 'lightblue',
     borderLeftWidth: '0.5px',
-    borderRightColor: 'lightblue',
-    borderRightWidth: '0.5px',
+    borderColor: 'lightblue',
+    borderWidth: '0.5px',
+    borderRadius: '3px',
+    margin: '20px',
   },
   search: {
     color: 'black', 

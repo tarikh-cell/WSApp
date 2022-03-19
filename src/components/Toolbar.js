@@ -14,16 +14,15 @@ const FONTS = ["normal","serif", "Roboto", "Montserrat", "OpenSans", "Arial", "T
 
 export default function Toolbar({ selection }) {
   const editor = useSlateStatic();
-  const [open, setOpen] = useState(false);
   
   return (
     <>
       <View style={styles.line} />
       <View style={styles.section}>
         {BLOCK.map((style) => (
-          <Nos
+          <IconSlot
             key={style}
-            isActive={false}
+            isActive={getActiveStyles(style)}
             title={style}
             onPress={(event) => {
               event.preventDefault();
@@ -35,7 +34,7 @@ export default function Toolbar({ selection }) {
       <View style={styles.line} />
       <View style={styles.section}>
         {CHARACTER_STYLES.map((style) => (
-          <Nos
+          <IconSlot
             key={style}
             isActive={false}
             title={style}
@@ -47,21 +46,9 @@ export default function Toolbar({ selection }) {
         ))}
       </View>
       <View style={styles.line} />
-        <View style={styles.section}>
-        {FONTS.map((style) => (
-          <Nod
-            key={style}
-            isActive={false}
-            title={style}
-            onPress={(event) => {
-              event.preventDefault();
-              toggleColor(editor, style, FONTS);
-            }}
-          />
-        ))}
-      </View>
+        <SizeDropdown ARRAY={FONTS} title={"Font"} />
       <View style={styles.line} />
-        <SizeDropdown editor={editor} props={open} />
+        <SizeDropdown ARRAY={CHARACTER_SIZE} title={"Font Size"} />
       <View style={styles.line} />
       <View style={styles.section}>
         {COLORS.map((style) => (
@@ -82,32 +69,33 @@ export default function Toolbar({ selection }) {
 
 function SizeDropdown(props) {
   const editor = useSlateStatic();
-  const [open, setOpen] = useState(props);
+  const [open, setOpen] = useState(true);
+  const { ARRAY, title } = props;
   if (open){
     return(
-      <Pressable style={{marginVertical: '1em'}} onPress={(event) => {event.preventDefault();setOpen(false);}}>
-        <Text style={[styles.inner, {fontSize: '20px'}]}>Aa</Text>
-        <Text style={styles.inner}>Font Size</Text>
+      <Pressable style={{marginVertical: '1em', flexDirection: 'row', justifyContent: 'space-between'}} onPress={(event) => {event.preventDefault();setOpen(false);}}>
+        <Text style={styles.inner}>{title}</Text>
+        <FontAwesome name="sort-down" size={20} color="lightgrey" />
       </Pressable>
     );
   } else {
     return(
       <View>
-      {CHARACTER_SIZE.map((style) => (
-        <Font
-          key={style}
-          isActive={false}
-          title={style}
-          onPress={(event) => {
-            event.preventDefault();
-            toggleColor(editor, style, CHARACTER_SIZE);
-            setOpen(true);
-          }}
-        />
-      ))}
-      <Pressable style={{alignSelf: 'center'}} onPress={(event) => {event.preventDefault();setOpen(true);}}>
-        <FontAwesome name="close" size={24} color="black" />
-      </Pressable>
+        <Pressable style={{marginVertical: '1em', flexDirection: 'row', justifyContent: 'space-between'}} onPress={(event) => {event.preventDefault();setOpen(true);}}>
+          <Text style={styles.inner}>{title}</Text>
+          <FontAwesome name="sort-up" size={20} color="lightgrey" />
+        </Pressable>
+        {ARRAY.map((style) => (
+          <Font
+            key={style}
+            isActive={false}
+            title={style}
+            onPress={(event) => {
+              event.preventDefault();
+              toggleColor(editor, style, ARRAY);
+            }}
+          />
+        ))}
       </View>
     );
   }
@@ -162,10 +150,10 @@ function Font(props) {
   );
 }
 
-function Nos(props) {
+function IconSlot(props) {
   const { icon, isActive, title, ...otherProps } = props;
   return(
-    <Pressable active={isActive} style={[styles.container, {backgroundColor: title, opacity: 0.5, alignItems: 'center'}]} {...otherProps}>
+    <Pressable active={isActive} style={{alignItems: 'center'}} {...otherProps}>
       <FontAwesome name={title} size={15} color="black" />
     </Pressable>
   );
@@ -179,15 +167,12 @@ function Nob(props) {
   );
 }
 
-function Nod(props) {
+function TextSlot(props) {
   const { icon, isActive, title, ...otherProps } = props;
   return(
-    <View>
-      <Pressable active={isActive} style={styles.container} {...otherProps}>
-        <Text style={[styles.inner, {fontFamily: title}]}>Ff</Text>
-      </Pressable>
+    <Pressable active={isActive} {...otherProps}>
       <Text style={styles.inner}>{title}</Text>
-    </View>
+    </Pressable>
   );
 }
 
