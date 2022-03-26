@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes, Link } from 'react-router-dom';
 import axiosInstance from '../../axios';
 
-import { FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
-export default function NavBar() {
+export default function NavBar({ mode }) {
     const [ isLoggedIn, setLoggedIn ] = useState(null);
 
     useEffect( () => {
@@ -15,22 +15,23 @@ export default function NavBar() {
     }, [isLoggedIn])
   
     return(
-      <View style={styles.toolbar}>
-        { isLoggedIn === 'true' ? <NavSlot path="/Profile"  icon="user-o" txt="Profile" /> : <NavSlot path="/LogIn"  icon="sign-in" txt="LogIn" />} 
-        <NavSlot path="/" icon="power-off" txt="Mode" onPress={ (event) => {event.preventDefault(); toggleFullScreen();}} />
-        <NavSlot path="/Files" icon="folder-o" txt="Files" />
-        { isLoggedIn === 'true' ?  <NavSlot path="/" icon="sign-out" txt="LogOut" onPress={ (event) => {event.preventDefault(); setLoggedIn(false); logout();}} /> : <></>}
-        <NavSlot path="/" icon="home" txt="Home" />
+      <View style={[styles.toolbar, {backgroundColor: mode ? "#000" : "FFF"}]}>
+        { isLoggedIn === 'true' ? <NavSlot path="/Profile"  icon="user" txt="Profile" color={mode} /> : <NavSlot path="/LogIn"  icon="log-in" txt="LogIn" color={mode} />} 
+        <NavSlot path="/" icon="feather" txt="Mode" color={mode} onPress={ (event) => {event.preventDefault(); toggleFullScreen();}} />
+        <NavSlot path="/Files" icon="folder" txt="Files" color={mode} />
+        { isLoggedIn === 'true' ?  <NavSlot path="/" icon="log-out" txt="LogOut" color={mode} onPress={ (event) => {event.preventDefault(); setLoggedIn(false); logout();}} /> : <></>}
+        <NavSlot path="/" icon="layers" txt="Home" color={mode} />
       </View>
     );
   }
   
   function NavSlot(props) {
-    const {path, icon, txt, ...otherprops} = props;
+    const {path, icon, txt, color, ...otherprops} = props;
+    const [ hover, setHover ] = useState(false);
     return (
       <Link to={path} style={{ textDecoration: 'none' }}>
-          <Pressable style={styles.section} {...otherprops} > 
-            <FontAwesome name={icon} size={30} color="black" />
+          <Pressable onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} style={[styles.section,{borderRadius: '8px', backgroundColor: hover ? "#D8BFD8" : ""}]} {...otherprops} > 
+            <Feather name={icon} size={24} color={color ? "white" : "black"} />
             <Text style={styles.text}></Text>   
           </Pressable>
       </Link>
@@ -55,14 +56,14 @@ export default function NavBar() {
   
 const styles = StyleSheet.create({
     toolbar: {
-      padding: '1%',
+      padding: '5px',
       alignItems: 'center',
       borderRightColor: '#E5E5E5',
       borderRightWidth: '1px',
-      backgroundColor: '#fff'
     }, 
     section: {
       marginBottom: '2em',
+      padding: '5px',
     },
     text: {
       color: 'grey',

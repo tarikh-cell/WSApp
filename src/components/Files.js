@@ -4,7 +4,7 @@ import { Route, BrowserRouter as Router, Routes, Link, useNavigate } from 'react
 import axiosInstance from '../../axios';
 import { EvilIcons } from '@expo/vector-icons';
 
-export default function File(props) {
+export default function File({ mode }) {
   const [data, setData] = useState( null );
   
   let navigate = useNavigate();
@@ -29,11 +29,10 @@ export default function File(props) {
     const [hover, setHover] = useState( false );
 
     return(
-      <View style={{flexDirection: 'row', width: '70%', justifyContent: 'space-between', borderBottomWidth: 0.1, borderColor: 'lightgrey', padding: '1em', backgroundColor: hover ? 'lightgrey' : '#fff'}}>
+      <View style={{flexDirection: 'row', width: '70%', justifyContent: 'space-between', borderBottomWidth: 0.1, borderColor: 'lightgrey', padding: '1em', backgroundColor: hover ? '#D8BFD8' : '#fff'}}>
         <TouchableOpacity style={{width: '95%', flexDirection: 'row'}} onPress={(event) => {event.preventDefault(); go(id, title, text);}} onMouseEnter={() => {setHover(true)}} onMouseLeave={() => setHover(false)} >
           <Text style={[styles.text, {width: '20%'}]}>{title}</Text>
-          <Text style={[styles.text, {width: '55%'}]}>{text}</Text>
-          {getText(text)}
+          <Text style={[styles.text, {width: '55%'}]}>Text Based</Text>
           <Text style={[styles.text, {width: '20%'}]}>{text.length}</Text>
         </TouchableOpacity>
         <Pressable style={{width: '10%'}} onPress={(event) => {event.preventDefault(); deleteData(id);}}><EvilIcons name="trash" size={24} color="blue" /></Pressable>
@@ -58,7 +57,7 @@ export default function File(props) {
             <Text style={{textAlign: 'left', width: '70%', fontWeight: '300', fontSize: '30px', marginBottom: '1em'}}>My Files</Text> 
             <View style={{flexDirection: 'row', width: '70%', justifyContent: 'space-between', padding: '1em', backgroundColor: '#fff', borderTopStartRadius: '5px'}}>
               <Text style={[styles.text, {width: '20%'}]}>Name</Text>
-              <Text style={[styles.text, {width: '50%'}]}>Preview</Text>
+              <Text style={[styles.text, {width: '50%'}]}>Type</Text>
               <Text style={[styles.text, {width: '20%'}]}>Size</Text>
               <Text style={{color: 'white', width: '10%'}}>Delete</Text>
             </View>

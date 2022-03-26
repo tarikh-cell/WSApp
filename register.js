@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
 import { Link } from 'react-router-dom';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function Register() {
+export default function Register({ mode }) {
     const [email, onChangeEmail] = React.useState("");
     const [user, onChangeUser] = React.useState("");
     const [pass, onChangePass] = React.useState("");
@@ -23,7 +23,7 @@ export default function Register() {
     
     return(
         <View style={styles.container}>
-            <View style={styles.form}>
+          <View style={[styles.form, {backgroundColor: mode ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)'}]}>
               <View style={styles.background}>
                 <AntDesign name="user" size={60} color="black" />
               </View>
@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
     form: {
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'rgba(0,0,0,0.9)',
       width: '50%',
       height: '75%',
       borderRadius: '5px',

@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { useFonts } from 'expo-font';
-import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 import Main from './main.js';
 import Register from './register.js';
@@ -14,6 +14,7 @@ import NavBar from './src/components/NavBar';
 import SideBar from './src/components/SideBar.js';
 
 export default function App() {
+  const [dark, setDark] = useState(getMode());
 
   const [loaded] = useFonts({
     Arial: require('./assests/fonts/arial.ttf'),
@@ -29,24 +30,34 @@ export default function App() {
 
   return (
     <Router>
-      <View style={styles.container}>        
-        <NavBar />
+      <View style={[styles.container,{backgroundColor: dark ? "#A9A9A9" : '#F5F5F5'}]}>     
+        <NavBar mode={dark} />
+        <Pressable onPress={() => {localStorage.setItem("DarkMode", !dark)}}>
+          {dark ? <Feather name="moon" size={24} color="darkblue" /> : <Feather name="sun" size={24} color="yellow" />}
+        </Pressable>
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="Profile" element={<Profile />} />
-          <Route path="LogIn" element={<Login />} />
-          <Route path="Files" element={<File />} />
-          <Route path="Register" element={<Register />} />
-        </Routes>    
+          <Route path="Profile" element={<Profile mode={dark} />} />
+          <Route path="LogIn" element={<Login mode={dark} />} />
+          <Route path="Files" element={<File mode={dark} />} />
+          <Route path="Register" element={<Register mode={dark} />} />
+        </Routes>     
       </View>
     </Router>
   );
+}
+
+function getMode(){
+  let mode = localStorage.getItem("DarkMode");
+  if (mode == null || mode == "false"){
+    return false;
+  }
+  return true;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#F5F5F5',
   },
 });

@@ -4,7 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import axiosInstance from './axios';
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function Login() {
+export default function Login({ mode }) {
     const [user, onChangeUser] = React.useState("");
     const [pass, onChangePass] = React.useState("");
     let navigate = useNavigate();
@@ -19,6 +19,7 @@ export default function Login() {
               localStorage.setItem('access_token', res.data.access);
               localStorage.setItem('refresh_token', res.data.refresh);
               localStorage.setItem('loggedIn', true);
+              localStorage.setItem('user', user);
               axiosInstance.defaults.headers['Authorization'] =
                   'JWT ' + localStorage.getItem('access_token', res.data.access);
               console.log(res);
@@ -29,7 +30,7 @@ export default function Login() {
   
     return (
         <View style={styles.container}>
-          <View style={styles.form}>
+          <View style={[styles.form, {backgroundColor: mode ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)'}]}>
             <View style={styles.background}>
               <AntDesign name="user" size={60} color="black" />
             </View>
@@ -38,7 +39,7 @@ export default function Login() {
             <TextInput style={styles.input} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} /> 
             <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
             <Pressable style={styles.button} onPress={ (event) => {event.preventDefault(); handleClick(user, pass); }}><Text style={{textAlign: 'center', color: 'white'}}>LogIn</Text></Pressable>
-            <Text style={{color: 'white'}}>Don't have an account? <Link to="/Register">Register</Link> here.</Text>         
+            <Text style={{color: mode ? 'white' : 'black'}}>Don't have an account? <Link to="/Register">Register</Link> here.</Text>         
           </View>
         </View>
     );
@@ -53,7 +54,6 @@ const styles = StyleSheet.create({
     form: {
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'rgba(0,0,0,0.9)',
       width: '50%',
       height: '70%',
       borderRadius: '5px',

@@ -5,6 +5,7 @@ import { StyleSheet, ScrollView, Pressable, Text, View, Dimensions, TextInput } 
 import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from "../../axios";
 
+import Timer from "./Timer";
 import Toolbar from "./Toolbar";
 import useEditorConfig from "../utils/useEditorConfig";
 import useSelection from "../utils/useSelection";
@@ -59,9 +60,26 @@ export default function Editor({ document, onChange }) {
 
   return (
     <Slate editor={editor} value={document} onChange={onChangeHandler}>
+
+      <Timer />
       
       <View style={styles.container}>
-        <Text>Save To DataBase</Text>
+        <Toolbar selection={selection} />
+      </View>
+
+      <ScrollView style={styles.editor}>
+        <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
+      </ScrollView> 
+
+
+    </Slate>
+  );
+}
+
+function downloadView() {
+  return(
+    <View>
+    <Text>Save To DataBase</Text>
         
           { modalVisible ? 
           <View style={{flexDirection: 'row'}}>
@@ -72,17 +90,7 @@ export default function Editor({ document, onChange }) {
           </View> : 
           <Pressable style={{alignSelf: 'center', padding: '4px'}} onPress={(event) => {event.preventDefault(); setModalVisible(true);}}><FontAwesome name="download" size={20} color="black" /></Pressable>
           }
-
-        <Toolbar selection={selection} />
       </View>
-
-      <ScrollView style={styles.editor}>
-        <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
-      </ScrollView> 
-
-      
-
-    </Slate>
   );
 }
 
@@ -90,24 +98,24 @@ const styles = StyleSheet.create({
   container: {
     height: '95%',
     backgroundColor: '#fff', 
-    padding: '1%', 
-    width: '13em',
+    padding: '1px', 
     borderColor: 'lightgrey',
     borderWidth: '1px',
     alignSelf: 'flex-end',
-    margin: '20px',
+    marginVertical: '20px',
+    marginLeft: '10em',
   },
   editor: {
     height: ScreenHeight,
     maxWidth: '50%',
     backgroundColor: '#FFF',
     padding: '5%',
-    borderLeftColor: 'lightblue',
-    borderLeftWidth: '0.5px',
+    borderLeftWidth: '0px',
     borderColor: 'lightblue',
     borderWidth: '0.5px',
     borderRadius: '3px',
-    margin: '20px',
+    marginVertical: '20px',
+    marginRight: '20px',
   },
   search: {
     color: 'black', 

@@ -4,10 +4,11 @@ import { Pressable, StyleSheet, Text, View, TextInput } from 'react-native';
 import { Dimensions } from 'react-native-web';
 import {
   LineChart,
+  BarChart,
 
 } from 'react-native-chart-kit';
 import axiosInstance from '../../axios';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, AntDesign } from '@expo/vector-icons';
 
 export default function Profile() {
   const [userId, setUserId] = useState("");
@@ -45,10 +46,29 @@ export default function Profile() {
 
   return (
       <View style={styles.container}>
-        <FontAwesome name="user" size={90} color="black" />
-        <Text>User Profile:</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '80%'}}>
+        <Toolbar />
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={{fontSize: '30px', margin: '1%'}}>Account Overview</Text>  
+          <Text style={{textAlign: 'right', margin: '1%'}}>{new Date().toDateString()}</Text>
+        </View>
+
+        <View style={styles.note}>
+          <Text style={styles.title}>Notes:</Text>
+          <TextInput style={styles.input} placeholder="Notes" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeText} value={text} />
+          <Pressable style={{alignSelf: 'center'}} onPress={ (event) => {event.preventDefault(); saveNote();}}><Text>Save</Text></Pressable>
+        </View>  
+
+        <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+        
           <LineChart
+            data={{labels: dates, datasets: [{ data: times }] }}
+            width={400} // from react-native
+            height={220}
+            chartConfig={chartConfig}
+            bezier
+            style={{ marginVertical: 8, borderRadius: 16 }}
+          />
+          <BarChart
             data={{
               labels: dates,
               datasets: [{
@@ -64,26 +84,32 @@ export default function Profile() {
               borderRadius: 16
             }}
           />
-          <View style={styles.note}>
-            <Text style={styles.title}>Notes:</Text>
-            <TextInput style={styles.input} placeholder="Notes" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeText} value={text} />
-            <Pressable style={{alignSelf: 'center'}} onPress={ (event) => {event.preventDefault(); saveNote();}}><Text>Save</Text></Pressable>
-          </View>
+          
         </View>
       </View>
   );
 }
 
+function Toolbar() {
+  return(
+    <View style={styles.toolbar}>
+      <View style={{backgroundColor: 'lightgrey', width: '8%', borderRadius: '8px', padding: '1%', flexDirection: 'row', alignItems: 'center', margin: '5px', justifyContent: 'space-between'}}>
+        <Text>Hi, {localStorage.getItem('user')}</Text>
+        <AntDesign name="user" size={24} color="black" />
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-    height: '95%',
-    marginTop: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '5em',
-    width: '90%'
+    width: '97%',
+    height: '100%',
+  },
+  profile: {
+    borderRightWidth: '1px',
+    borderColor: 'purple'
   },
   note: {
     height: '10em',
@@ -95,5 +121,12 @@ const styles = StyleSheet.create({
       borderBottomWidth: '0.1px',
       borderBottomColor: 'grey',
       padding: '1px',
-  }
+  },
+  toolbar: {
+    borderBottomWidth: '1px',
+    borderColor: '#D8BFD8',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    height: '8%'
+  },
 });

@@ -1,30 +1,29 @@
 import { StyleSheet, Button, Pressable, Text, View } from 'react-native';
 import { Editor } from "slate";
 import { useSlateStatic } from "slate-react";
-import { FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 
 import { Range, Transforms } from 'slate';
 
-const BLOCK = ['quote-left', 'list-ul', 'align-left', 'align-center', 'align-right'];
+const BLOCK = ['align-left', 'align-center', 'align-right', 'list'];
 const CHARACTER_STYLES = ["bold", "italic", "underline", "code", "link"];
 const COLORS = ["green", "red", "yellow", "blue", "black", "pink", "purple", "orange", "white", "grey"];
 const CHARACTER_SIZE = ["ten", "twelve", "fourteen", "sixteen", "eighteen", "twenty", "twentytwo", "twentyfour", "thirtytwo", "sixtyfour", "onehundredtwentyeight"];
+const SIZE = ["10", "12", "14", "16", "18", "20", "22", "24", "32", "63", "128"];
 const FONTS = ["normal","serif", "Roboto", "Montserrat", "OpenSans", "Arial", "TimesNewRoman", "Calibri"];
 
 export default function Toolbar({ selection }) {
   const editor = useSlateStatic();
-  
+
   return (
     <>
-      <View style={styles.line} />
       <View style={styles.section}>
         {BLOCK.map((style) => (
           <IconSlot
             key={style}
-            isActive={getActiveStyles(style)}
             title={style}
-            onPress={(event) => {
+            onMouseDown={(event) => {
               event.preventDefault();
               toggleBlockType(editor, style);
             }}
@@ -36,9 +35,9 @@ export default function Toolbar({ selection }) {
         {CHARACTER_STYLES.map((style) => (
           <IconSlot
             key={style}
-            isActive={false}
+            isActive={getActiveStyles(editor).has(style)}
             title={style}
-            onPress={(event) => {
+            onMouseDown={(event) => {
               event.preventDefault();
               toggleStyle(editor, style);
             }}
@@ -46,9 +45,9 @@ export default function Toolbar({ selection }) {
         ))}
       </View>
       <View style={styles.line} />
-        <SizeDropdown ARRAY={FONTS} title={"Font"} />
+        <SizeDropdown ARRAY={FONTS} ARR={FONTS} title={"Font"} />
       <View style={styles.line} />
-        <SizeDropdown ARRAY={CHARACTER_SIZE} title={"Font Size"} />
+        <SizeDropdown ARRAY={CHARACTER_SIZE} ARR={SIZE} title={"Font Size"} />
       <View style={styles.line} />
       <View style={styles.section}>
         {COLORS.map((style) => (
@@ -56,7 +55,7 @@ export default function Toolbar({ selection }) {
             key={style}
             isActive={false}
             title={style}
-            onPress={(event) => {
+            onMouseDown={(event) => {
               event.preventDefault();
               toggleColor(editor, style, COLORS);
             }}
@@ -70,26 +69,28 @@ export default function Toolbar({ selection }) {
 function SizeDropdown(props) {
   const editor = useSlateStatic();
   const [open, setOpen] = useState(true);
-  const { ARRAY, title } = props;
+  const { ARRAY, ARR, title } = props;
+  
   if (open){
     return(
-      <Pressable style={{marginVertical: '1em', flexDirection: 'row', justifyContent: 'space-between'}} onPress={(event) => {event.preventDefault();setOpen(false);}}>
+      <Pressable style={{marginVertical: '1em', justifyContent: 'space-between'}} onPress={(event) => {event.preventDefault();setOpen(false);}}>
         <Text style={styles.inner}>{title}</Text>
-        <FontAwesome name="sort-down" size={20} color="lightgrey" />
+        <Text style={styles.inner}></Text>
+        <Feather name="arrow-down" size={15} color="lightgrey" />
       </Pressable>
     );
   } else {
     return(
       <View>
-        <Pressable style={{marginVertical: '1em', flexDirection: 'row', justifyContent: 'space-between'}} onPress={(event) => {event.preventDefault();setOpen(true);}}>
+        <Pressable style={{marginVertical: '1em', justifyContent: 'center'}} onPress={(event) => {event.preventDefault();setOpen(true);}}>
           <Text style={styles.inner}>{title}</Text>
-          <FontAwesome name="sort-up" size={20} color="lightgrey" />
+          <Feather name="arrow-up" size={15} color="lightgrey" />
         </Pressable>
-        {ARRAY.map((style) => (
+        {ARRAY.map((style, index) => (
           <Font
             key={style}
             isActive={false}
-            title={style}
+            title={ARR[index]}
             onPress={(event) => {
               event.preventDefault();
               toggleColor(editor, style, ARRAY);
@@ -144,8 +145,8 @@ export function getTextBlockStyle(editor) {
 function Font(props) {
   const { icon, isActive, title, ...otherProps } = props;
   return(
-    <Pressable active={isActive} style={{alignItems: 'center', marginVertical: '2px'}} {...otherProps}>
-      <Text style={{fontSize: '15px'}}>{title}</Text>
+    <Pressable style={{alignItems: 'center', marginVertical: '2px'}} {...otherProps}>
+      <Text style={{fontSize: '10px'}}>{title}</Text>
     </Pressable>
   );
 }
@@ -153,16 +154,16 @@ function Font(props) {
 function IconSlot(props) {
   const { icon, isActive, title, ...otherProps } = props;
   return(
-    <Pressable active={isActive} style={{alignItems: 'center'}} {...otherProps}>
-      <FontAwesome name={title} size={15} color="black" />
+    <Pressable style={{alignItems: 'center', borderRadius: '8px', backgroundColor: isActive ? "lightgrey" : "#fff"}} {...otherProps}>
+      <Feather name={title} size={20} color="black" />
     </Pressable>
   );
 }
 
 function Nob(props) {
-  const { icon, isActive, title, ...otherProps } = props;
+  const { icon,  title, ...otherProps } = props;
   return(
-    <Pressable active={isActive} style={[styles.container, {backgroundColor: title, opacity: 0.5}]} {...otherProps}>
+    <Pressable style={[styles.container, {backgroundColor: title, opacity: 0.5}]} {...otherProps}>
     </Pressable>
   );
 }
@@ -170,7 +171,7 @@ function Nob(props) {
 function TextSlot(props) {
   const { icon, isActive, title, ...otherProps } = props;
   return(
-    <Pressable active={isActive} {...otherProps}>
+    <Pressable {...otherProps}>
       <Text style={styles.inner}>{title}</Text>
     </Pressable>
   );
@@ -206,8 +207,8 @@ function toggleColor(editor, style, type) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '2em',
-    height: '2em',
+    width: '1em',
+    height: '1em',
     borderRadius: '50%',
     justifyContent: 'center',
     borderWidth: 3,
@@ -216,17 +217,16 @@ const styles = StyleSheet.create({
   },
   inner: {
     alignSelf: 'center',
+    fontSize: '10px'
   },
   line: {
     borderTopWidth: '1px',
     borderColor: 'lightgrey',
-    margin: '5px',
-    width: '100%'
+    margin: '1px',
   }, 
   section: {
-    flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginVertical: '1em',
+    justifyContent: 'space-evenly',
+
   }
 });

@@ -19,11 +19,7 @@ function renderElement(props) {
       return <h3 {...attributes}>{children}</h3>;
     case "h4":
       return <h4 {...attributes}>{children}</h4>;
-    case "r":
-      return <Text {...attributes} style={{color: "green"}}>{children}</Text>
-    case 'quote-left':
-      return <blockquote style={{color: '#aaa', borderLeftWidth: '2px', borderLeftColor: '#ddd'}} {...attributes}>{children}</blockquote>
-    case 'list-ul':
+   case 'list':
       return <li {...attributes}>{children}</li>
     case 'align-left':
       return <p style={{textAlign: 'left'}} {...attributes}>{children}</p>;
