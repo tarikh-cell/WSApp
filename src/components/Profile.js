@@ -29,10 +29,6 @@ export default function Profile() {
     }
   }, [])
 
-  function setP() {
-    axiosInstance.post(`productivity/new/`, {duration: 5, author: userId}).then((res) => console.log(res));
-  }
-
   function saveNote(){
     localStorage.setItem("notes", text);
   }

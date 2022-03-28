@@ -1,10 +1,10 @@
 import { useCallback, useRef, useState, useMemo, useEffect } from "react";
 import { Editable, Slate, withReact } from "slate-react";
 import { createEditor } from "slate";
-import { StyleSheet, ScrollView, Pressable, Text, View, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, Pressable, Text, View, Dimensions, TextInput, Button } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import axiosInstance from "../../axios";
-
+import { withHistory } from "slate-history";
 import Timer from "./Timer";
 import Toolbar from "./Toolbar";
 import useEditorConfig from "../utils/useEditorConfig";
@@ -12,7 +12,7 @@ import useSelection from "../utils/useSelection";
 let ScreenHeight = Dimensions.get("window").height;
 
 export default function Editor({ document, onChange }) {
-  const editor = useMemo(() => withReact(createEditor()), []);
+  const editor = useMemo(() => withReact(withHistory(createEditor())), []);
   const { renderElement, renderLeaf } = useEditorConfig(editor);
   const [selection, setSelection] = useSelection(editor);
   const [text, onChangeText] = useState("");
@@ -58,8 +58,11 @@ export default function Editor({ document, onChange }) {
       }
   }
 
+  
+
   return (
-    <Slate editor={editor} value={document} onChange={onChangeHandler}>
+    <Slate id='source-html' editor={editor} value={document} onChange={onChangeHandler}>
+      <Button onPress={()=> exportHTML()} title='doomed'></Button>
 
       <Timer />
       
@@ -68,7 +71,7 @@ export default function Editor({ document, onChange }) {
       </View>
 
       <ScrollView style={styles.editor}>
-        <Editable autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
+        <Editable id='source-html' autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
       </ScrollView> 
 
 
@@ -93,7 +96,23 @@ function downloadView() {
       </View>
   );
 }
-
+function exportHTML(){
+    console.log("d")
+    var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+         "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+         "xmlns='http://www.w3.org/TR/REC-html40'>"+
+         "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+    var footer = "</body></html>";
+    var sourceHTML = header+document.getElementById("source-html").innerHTML+footer;
+    
+    var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+    var fileDownload = document.createElement("a");
+    document.body.appendChild(fileDownload);
+    fileDownload.href = source;
+    fileDownload.download = 'document.doc';
+    fileDownload.click();
+    document.body.removeChild(fileDownload);
+  }
 const styles = StyleSheet.create({
   container: {
     height: '95%',

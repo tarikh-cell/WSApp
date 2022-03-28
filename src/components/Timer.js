@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
+
+import axiosInstance from '../../axios';
 
 export default function Timer() {
     const [hour, setHour] = useState("");
@@ -7,8 +10,12 @@ export default function Timer() {
     const [secs, setSecs] = useState(60);
     const [targetTime, setTargetTime] = useState("");
     const [start, setStart] = useState(false);
+    const [userId, setUserId] = useState("");
 
     useEffect( () => {
+        if (localStorage.getItem('loggedIn') === 'true' && userId === ""){
+            axiosInstance.get('https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/user/use/').then((res) => setUserId(res.data.ID));
+        }
         let intervalID = setInterval(
             () => tick(),
             1000
@@ -80,18 +87,31 @@ export default function Timer() {
 
         if (start) {if(minsLeft <= 0 && hrsLeft <= 0){
             setStart(false);
+            setP();
         }}
         
         let timeLeft = hrsLeft + ':' + minsLeft
         return timeLeft
     }
 
+    function setP() {
+        if (localStorage.getItem('loggedIn') === 'true') {
+            axiosInstance.post(`productivity/new/`, {duration: (hour*60)+minute, author: userId}).then((res) => console.log(res));
+        }
+    }
+
     return(
         <View style={styles.container}>
-            <Pressable onMouseDown={() => getTime()}><Text>start</Text></Pressable>
-            <TextInput style={styles.input} placeholder="Hours" placeholderTextColor="#9a73ef" onChangeText={setHour} value={hour} />
-            <TextInput style={styles.input} placeholder="Mins" placeholderTextColor="#9a73ef" onChangeText={setMinute} value={minute} />
-            { start ? <Text>Timer: {checkTimeLeft()}{secs}</Text> : null}
+            
+            { start ? <Text style={styles.input}>Timer: {checkTimeLeft()}{secs}</Text> : 
+            <>
+                <View style={{flexDirection: 'row'}}>
+                    <TextInput style={styles.input} placeholder="Hours" placeholderTextColor="#9a73ef" onChangeText={setHour} value={hour} />
+                    <TextInput style={styles.input} placeholder="Mins" placeholderTextColor="#9a73ef" onChangeText={setMinute} value={minute} />
+                </View>
+                <Pressable style={{alignSelf: 'center'}} onMouseDown={() => getTime()}><AntDesign name="caretright" size={24} color="black" /></Pressable>
+                </>
+            }
         </View>
     );
 }
@@ -101,12 +121,10 @@ const styles = StyleSheet.create({
         borderRadius: '8px',
         borderWidth: '1px',
         borderColor: 'lightgrey',
-        height: '30%',
+        height: '20%',
         marginTop: '5%',
     },
     input: {
-        borderWidth: '1.5px',
-        borderColor: '#8B008B',
         width: '5em',
         height: '3em',
         padding: '5px',
