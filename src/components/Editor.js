@@ -9,6 +9,7 @@ import Timer from "./Timer";
 import Toolbar from "./Toolbar";
 import useEditorConfig from "../utils/useEditorConfig";
 import useSelection from "../utils/useSelection";
+import { TouchableOpacity } from "react-native-web";
 let ScreenHeight = Dimensions.get("window").height;
 
 export default function Editor({ document, onChange }) {
@@ -62,7 +63,7 @@ export default function Editor({ document, onChange }) {
 
   return (
     <Slate id='source-html' editor={editor} value={document} onChange={onChangeHandler}>
-      <Button onPress={()=> exportHTML()} title='doomed'></Button>
+      
 
       <Timer />
       
@@ -74,7 +75,9 @@ export default function Editor({ document, onChange }) {
         <Editable id='source-html' autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
       </ScrollView> 
 
-
+      <TouchableOpacity style={styles.circle} onPress={()=> exportHTML()}>
+        <FontAwesome name="download" size={24} color="blue" />
+      </TouchableOpacity>
     </Slate>
   );
 }
@@ -142,5 +145,13 @@ const styles = StyleSheet.create({
     borderWidth: '0.5px',
     borderRadius: '8px',
     marginRight: '1px'
+  }, 
+  circle: {
+    height: '50px',
+    width: '50px',
+    borderRadius: '50%',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

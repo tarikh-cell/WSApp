@@ -66,15 +66,25 @@ export default function Toolbar({ selection }) {
   );
 }
 
+function getActiveSize(style, type) {
+  if (style != null){
+    var x = Object.keys(style)
+    let s_arr = x.map((val) => String(val))
+    const intersection = s_arr.filter(element => type.includes(element));
+    return intersection[0];
+  }
+}
+
 function SizeDropdown(props) {
   const editor = useSlateStatic();
   const [open, setOpen] = useState(true);
   const { ARRAY, ARR, title } = props;
+  const style = Editor.marks(editor);
   
   if (open){
     return(
       <Pressable style={{marginVertical: '1em', justifyContent: 'space-between'}} onPress={(event) => {event.preventDefault();setOpen(false);}}>
-        <Text style={styles.inner}>{title}</Text>
+        <Text style={styles.inner}>{getActiveSize(style, ARRAY)}</Text>
         <Text style={styles.inner}></Text>
         <Feather name="arrow-down" size={15} color="lightgrey" />
       </Pressable>
