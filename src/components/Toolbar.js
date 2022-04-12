@@ -1,8 +1,9 @@
 import { StyleSheet, Button, Pressable, Text, View } from 'react-native';
 import { Editor } from "slate";
 import { useSlateStatic } from "slate-react";
-import { Feather } from '@expo/vector-icons';
+import { AntDesign, Feather } from '@expo/vector-icons';
 import { useState } from 'react';
+import { Picker } from 'react-native-web';
 
 import { Range, Transforms } from 'slate';
 
@@ -17,9 +18,12 @@ export default function Toolbar({ selection }) {
   const editor = useSlateStatic();
 
   return (
-    <>
-      <View style={styles.section}>
-        {BLOCK.map((style) => (
+    <View style={styles.top}>
+      {dropdown(FONTS, FONTS)}
+      <View style={styles.line} />
+      {dropdown(CHARACTER_SIZE, SIZE)}
+      <View style={styles.line} />
+      {BLOCK.map((style) => (
           <IconSlot
             key={style}
             title={style}
@@ -29,9 +33,7 @@ export default function Toolbar({ selection }) {
             }}
           />
         ))}
-      </View>
       <View style={styles.line} />
-      <View style={styles.section}>
         {CHARACTER_STYLES.map((style) => (
           <IconSlot
             key={style}
@@ -43,13 +45,7 @@ export default function Toolbar({ selection }) {
             }}
           />
         ))}
-      </View>
       <View style={styles.line} />
-        <SizeDropdown ARRAY={FONTS} ARR={FONTS} title={"Font"} />
-      <View style={styles.line} />
-        <SizeDropdown ARRAY={CHARACTER_SIZE} ARR={SIZE} title={"Font Size"} />
-      <View style={styles.line} />
-      <View style={styles.section}>
         {COLORS.map((style) => (
           <Nob
             key={style}
@@ -61,8 +57,7 @@ export default function Toolbar({ selection }) {
             }}
           />
         ))}
-      </View>
-    </>
+    </View>
   );
 }
 
@@ -75,41 +70,54 @@ function getActiveSize(style, type) {
   }
 }
 
+function dropdown(INITIAL_ARRAY, DISPLAY_ARRAY) {
+  const editor = useSlateStatic();
+
+  return(
+    <Picker style={styles.dropdown} selectedValue={getActiveSize(Editor.marks(editor), INITIAL_ARRAY)} onValueChange={(itemValue) => toggleColor(editor, itemValue, INITIAL_ARRAY) } >
+      {INITIAL_ARRAY.map((style, index) => (
+            <Picker.Item
+              label={DISPLAY_ARRAY[index]}
+              key={index}
+              value={style.toString()}
+              />))}
+      </Picker>
+  );
+}
+
 function SizeDropdown(props) {
   const editor = useSlateStatic();
   const [open, setOpen] = useState(true);
   const { ARRAY, ARR, title } = props;
   const style = Editor.marks(editor);
-  
-  if (open){
+
     return(
-      <Pressable style={{marginVertical: '1em', justifyContent: 'space-between'}} onPress={(event) => {event.preventDefault();setOpen(false);}}>
-        <Text style={styles.inner}>{getActiveSize(style, ARRAY)}</Text>
-        <Text style={styles.inner}></Text>
-        <Feather name="arrow-down" size={15} color="lightgrey" />
-      </Pressable>
-    );
-  } else {
-    return(
-      <View>
-        <Pressable style={{marginVertical: '1em', justifyContent: 'center'}} onPress={(event) => {event.preventDefault();setOpen(true);}}>
-          <Text style={styles.inner}>{title}</Text>
-          <Feather name="arrow-up" size={15} color="lightgrey" />
+      <>
+        <Pressable style={{justifyContent: 'space-between', flexDirection: 'row'}} onPress={(event) => {event.preventDefault();setOpen(false);}}>
+          <Text style={styles.inner}>{getActiveSize(style, ARRAY)}</Text>
+          <Text style={styles.inner}></Text>
+          <AntDesign name="caretdown" size={15} color="black" />
         </Pressable>
-        {ARRAY.map((style, index) => (
-          <Font
-            key={style}
-            isActive={false}
-            title={ARR[index]}
-            onPress={(event) => {
-              event.preventDefault();
-              toggleColor(editor, style, ARRAY);
-            }}
-          />
-        ))}
-      </View>
+
+        { open ? null : <View style={{zIndex: 2, position: 'absolute', left: 21}}>
+          <Pressable style={{marginVertical: '1em', justifyContent: 'center'}} onPress={(event) => {event.preventDefault();setOpen(true);}}>
+            <Text style={styles.inner}>{title}</Text>
+            <AntDesign name="caretdown" size={15} color="black" />
+          </Pressable>
+          {ARRAY.map((style, index) => (
+            <Font
+              key={style}
+              isActive={false}
+              title={ARR[index]}
+              onPress={(event) => {
+                event.preventDefault();
+                toggleColor(editor, style, ARRAY);
+              }}
+            />
+          ))}
+        </View> }
+      </>
     );
-  }
 }
 
 export function toggleBlockType(editor, blockType) {
@@ -164,7 +172,7 @@ function Font(props) {
 function IconSlot(props) {
   const { icon, isActive, title, ...otherProps } = props;
   return(
-    <Pressable style={{alignItems: 'center', borderRadius: '8px', backgroundColor: isActive ? "lightgrey" : "#fff"}} {...otherProps}>
+    <Pressable style={{alignItems: 'center', borderRadius: '4px', padding: '2px', backgroundColor: isActive ? "rgba(178, 212, 255, 0.4)" : "#fff"}} {...otherProps}>
       <Feather name={title} size={20} color="black" />
     </Pressable>
   );
@@ -216,6 +224,15 @@ function toggleColor(editor, style, type) {
 }
 
 const styles = StyleSheet.create({
+  top: {
+    flexDirection: 'row',
+    backgroundColor: '#fff', 
+    padding: '3px', 
+    borderColor: 'lightgrey',
+    borderWidth: '1px',
+    justifyContent: 'space-evenly',
+    zIndex: 1,
+  },
   container: {
     width: '1em',
     height: '1em',
@@ -236,7 +253,13 @@ const styles = StyleSheet.create({
   }, 
   section: {
     flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
-
+    justifyContent: 'space-around',
+    flexDirection: 'row'
+  },
+  dropdown: {
+    borderWidth: 0,
+    backgroundColor: 'rgba(178, 212, 255, 0.4)',
+    opactiy: 0.1,
+    borderRadius: '8%'
   }
 });

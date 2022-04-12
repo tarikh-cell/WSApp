@@ -62,23 +62,24 @@ export default function Editor({ document, onChange }) {
   
 
   return (
-    <Slate id='source-html' editor={editor} value={document} onChange={onChangeHandler}>
-      
-
-      <Timer />
-      
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <Slate editor={editor} value={document} onChange={onChangeHandler}>
+        
         <Toolbar selection={selection} />
-      </View>
 
-      <ScrollView style={styles.editor}>
-        <Editable id='source-html' autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
-      </ScrollView> 
+        <ScrollView style={styles.editor}>        
+          <Editable id='source-html' autoFocus renderElement={renderElement} renderLeaf={renderLeaf} />
+        </ScrollView> 
+      </Slate>
+    </View>
+  );
+}
 
-      <TouchableOpacity style={styles.circle} onPress={()=> exportHTML()}>
+function download() {
+  return(
+    <TouchableOpacity style={styles.circle} onPress={()=> exportHTML()}>
         <FontAwesome name="download" size={24} color="blue" />
       </TouchableOpacity>
-    </Slate>
   );
 }
 
@@ -99,8 +100,8 @@ function downloadView() {
       </View>
   );
 }
+
 function exportHTML(){
-    console.log("d")
     var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
          "xmlns:w='urn:schemas-microsoft-com:office:word' "+
          "xmlns='http://www.w3.org/TR/REC-html40'>"+
@@ -116,28 +117,19 @@ function exportHTML(){
     fileDownload.click();
     document.body.removeChild(fileDownload);
   }
+
 const styles = StyleSheet.create({
   container: {
-    height: '95%',
-    backgroundColor: '#fff', 
-    padding: '1px', 
-    borderColor: 'lightgrey',
-    borderWidth: '1px',
-    alignSelf: 'flex-end',
-    marginVertical: '20px',
-    marginLeft: '10em',
+    width: '50%',
   },
   editor: {
     height: ScreenHeight,
-    maxWidth: '50%',
     backgroundColor: '#FFF',
     padding: '5%',
-    borderLeftWidth: '0px',
     borderColor: 'lightblue',
     borderWidth: '0.5px',
     borderRadius: '3px',
-    marginVertical: '20px',
-    marginRight: '20px',
+    zIndex: 0
   },
   search: {
     color: 'black', 
