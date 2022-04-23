@@ -4,7 +4,6 @@ import { useSlateStatic } from "slate-react";
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Picker } from 'react-native-web';
-
 import { Range, Transforms } from 'slate';
 
 const BLOCK = ['align-left', 'align-center', 'align-right', 'list'];
@@ -16,6 +15,7 @@ const FONTS = ["normal","serif", "Roboto", "Montserrat", "OpenSans", "Arial", "T
 
 export default function Toolbar({ selection }) {
   const editor = useSlateStatic();
+  const [edit, setEdit] = useState("does it");
 
   return (
     <View style={styles.top}>
@@ -42,21 +42,12 @@ export default function Toolbar({ selection }) {
             onMouseDown={(event) => {
               event.preventDefault();
               toggleStyle(editor, style);
+              setEdit("work?");
             }}
           />
         ))}
       <View style={styles.line} />
-        {COLORS.map((style) => (
-          <Nob
-            key={style}
-            isActive={false}
-            title={style}
-            onMouseDown={(event) => {
-              event.preventDefault();
-              toggleColor(editor, style, COLORS);
-            }}
-          />
-        ))}
+      {drop(COLORS)}
     </View>
   );
 }
@@ -68,6 +59,38 @@ function getActiveSize(style, type) {
     const intersection = s_arr.filter(element => type.includes(element));
     return intersection[0];
   }
+}
+
+function drop(type) {
+    const [open, setOpen] = useState(false);
+    const editor = useSlateStatic();
+    const col = getActiveSize(Editor.marks(editor), type);
+    if (!open) {
+      return(
+      <Pressable style={[styles.container, {backgroundColor: col, opacity: 0.5}]} onPress={() => setOpen(true)}></Pressable>
+      );
+    } else {
+      return(
+        <View>
+          <Pressable style={[styles.container, {backgroundColor: col, opacity: 0.5}]} onPress={() => setOpen(true)}></Pressable>
+        <View style={{overflow: 'visible', maxWidth: '8em', flexDirection: 'row', flexWrap:'wrap', marginTop: '2em'}}>
+        {type.map((style) => (
+          <Nob
+            key={style}
+            isActive={false}
+            title={style}
+            onMouseDown={(event) => {
+              event.preventDefault();
+              toggleColor(editor, style, COLORS);
+              setOpen(false);
+            }}
+          />
+          ))}
+        </View>
+        </View>
+      );
+    }
+    
 }
 
 function dropdown(INITIAL_ARRAY, DISPLAY_ARRAY) {
@@ -231,11 +254,12 @@ const styles = StyleSheet.create({
     borderColor: 'lightgrey',
     borderWidth: '1px',
     justifyContent: 'space-evenly',
+    maxHeight: '2em',
     zIndex: 1,
   },
   container: {
-    width: '1em',
-    height: '1em',
+    width: '1.25em',
+    height: '1.25em',
     borderRadius: '50%',
     justifyContent: 'center',
     borderWidth: 3,
