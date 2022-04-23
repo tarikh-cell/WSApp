@@ -1,7 +1,7 @@
-import { StyleSheet, Button, Pressable, Text, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, Pressable, Text, View } from 'react-native';
 import { Editor } from "slate";
 import { useSlateStatic } from "slate-react";
-import { AntDesign, Feather } from '@expo/vector-icons';
+import { AntDesign, Feather, Foundation } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Picker } from 'react-native-web';
 import { Range, Transforms } from 'slate';
@@ -20,9 +20,7 @@ export default function Toolbar({ selection }) {
   return (
     <View style={styles.top}>
       {dropdown(FONTS, FONTS)}
-      <View style={styles.line} />
       {dropdown(CHARACTER_SIZE, SIZE)}
-      <View style={styles.line} />
       {BLOCK.map((style) => (
           <IconSlot
             key={style}
@@ -33,7 +31,6 @@ export default function Toolbar({ selection }) {
             }}
           />
         ))}
-      <View style={styles.line} />
         {CHARACTER_STYLES.map((style) => (
           <IconSlot
             key={style}
@@ -46,10 +43,29 @@ export default function Toolbar({ selection }) {
             }}
           />
         ))}
-      <View style={styles.line} />
       {drop(COLORS)}
+      <TouchableOpacity style={styles.circle} onPress={()=> exportHTML()}>
+        <Foundation name="page-export-doc" size={24} color="black" />
+      </TouchableOpacity>
     </View>
   );
+}
+
+function exportHTML(){
+  var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+       "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+       "xmlns='http://www.w3.org/TR/REC-html40'>"+
+       "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+  var footer = "</body></html>";
+  var sourceHTML = header+document.getElementById("source-html").innerHTML+footer;
+  
+  var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+  var fileDownload = document.createElement("a");
+  document.body.appendChild(fileDownload);
+  fileDownload.href = source;
+  fileDownload.download = 'document.doc';
+  fileDownload.click();
+  document.body.removeChild(fileDownload);
 }
 
 function getActiveSize(style, type) {
@@ -67,12 +83,11 @@ function drop(type) {
     const col = getActiveSize(Editor.marks(editor), type);
     if (!open) {
       return(
-      <Pressable style={[styles.container, {backgroundColor: col, opacity: 0.5}]} onPress={() => setOpen(true)}></Pressable>
+      <Pressable style={[styles.container, {backgroundColor: col, opacity: 0.5}]} onMouseDown={() => setOpen(true)}></Pressable>
       );
     } else {
       return(
         <View>
-          <Pressable style={[styles.container, {backgroundColor: col, opacity: 0.5}]} onPress={() => setOpen(true)}></Pressable>
         <View style={{overflow: 'visible', maxWidth: '8em', flexDirection: 'row', flexWrap:'wrap', marginTop: '2em'}}>
         {type.map((style) => (
           <Nob
@@ -102,7 +117,7 @@ function dropdown(INITIAL_ARRAY, DISPLAY_ARRAY) {
             <Picker.Item
               label={DISPLAY_ARRAY[index]}
               key={index}
-              value={style.toString()}
+              value={String(style)}
               />))}
       </Picker>
   );
@@ -253,7 +268,8 @@ const styles = StyleSheet.create({
     padding: '3px', 
     borderColor: 'lightgrey',
     borderWidth: '1px',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
+    alignContent: 'center',
     maxHeight: '2em',
     zIndex: 1,
   },
@@ -271,7 +287,7 @@ const styles = StyleSheet.create({
     fontSize: '10px'
   },
   line: {
-    borderTopWidth: '1px',
+    borderRightWidth: '1px',
     borderColor: 'lightgrey',
     margin: '1px',
   }, 
@@ -282,8 +298,8 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     borderWidth: 0,
-    backgroundColor: 'rgba(178, 212, 255, 0.4)',
+    // backgroundColor: 'rgba(178, 212, 255, 0.4)',
     opactiy: 0.1,
-    borderRadius: '8%'
+    borderRadius: '4px'
   }
 });

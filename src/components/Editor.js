@@ -75,14 +75,6 @@ export default function Editor({ document, onChange }) {
   );
 }
 
-function download() {
-  return(
-    <TouchableOpacity style={styles.circle} onPress={()=> exportHTML()}>
-        <FontAwesome name="download" size={24} color="blue" />
-      </TouchableOpacity>
-  );
-}
-
 function downloadView() {
   return(
     <View>
@@ -101,26 +93,9 @@ function downloadView() {
   );
 }
 
-function exportHTML(){
-    var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
-         "xmlns:w='urn:schemas-microsoft-com:office:word' "+
-         "xmlns='http://www.w3.org/TR/REC-html40'>"+
-         "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
-    var footer = "</body></html>";
-    var sourceHTML = header+document.getElementById("source-html").innerHTML+footer;
-    
-    var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-    var fileDownload = document.createElement("a");
-    document.body.appendChild(fileDownload);
-    fileDownload.href = source;
-    fileDownload.download = 'document.doc';
-    fileDownload.click();
-    document.body.removeChild(fileDownload);
-  }
-
 const styles = StyleSheet.create({
   container: {
-    width: '50%',
+    width: '45%',
   },
   editor: {
     height: ScreenHeight,
@@ -128,7 +103,6 @@ const styles = StyleSheet.create({
     padding: '5%',
     borderColor: 'lightblue',
     borderWidth: '0.5px',
-    borderRadius: '3px',
     zIndex: 0
   },
   search: {

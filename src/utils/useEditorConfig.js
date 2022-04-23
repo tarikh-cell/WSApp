@@ -40,7 +40,7 @@ function renderLeaf({ attributes, children, leaf }) {
     if (leaf.code) {el = <code>{el}</code>;}
     if (leaf.italic) {el = <em>{el}</em>;}
     if (leaf.underline) {el = <u>{el}</u>;}
-    if (leaf.link) {el = <a href={el}>{el}</a>;}
+    if (leaf.link) {el = <a href={"https://"+el.props.children.props.text.text}>{el}</a>;}
     
     if (leaf.green){el = <Text style={{color: "green"}}>{el}</Text>;}
     if (leaf.red){el = <Text style={{color: "red"}}>{el}</Text>;}
