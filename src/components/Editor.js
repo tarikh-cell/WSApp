@@ -9,30 +9,39 @@ import Timer from "./Timer";
 import Toolbar from "./Toolbar";
 import useEditorConfig from "../utils/useEditorConfig";
 import useSelection from "../utils/useSelection";
-import { TouchableOpacity } from "react-native-web";
 let ScreenHeight = Dimensions.get("window").height;
 
-export default function Editor({ document, onChange }) {
+export default function Editor({ doc, onChange }) {
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
   const { renderElement, renderLeaf } = useEditorConfig(editor);
   const [selection, setSelection] = useSelection(editor);
   const [text, onChangeText] = useState("");
   const [userId, setUserId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const onChangeHandler = useCallback(
-    (document) => {
-      onChange(document);
+    (doc) => {
+      onChange(doc);
       setSelection(editor.selection);
     },
     [editor.selection, onChange, setSelection]
   );
 
   useEffect(() => {
+    document.addEventListener('fullscreenchange', exitHandler);
     if (localStorage.getItem('loggedIn') === 'true'){
       axiosInstance.get('https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/user/use/').then((res) => setUserId(res.data.ID));
     }
+
   }, [])
+
+  function exitHandler() {
+      if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
+        //alert("penguins");
+        setOpen(!open);
+      }
+    }
 
   function download(){
     let id = localStorage.getItem("postID");
@@ -40,7 +49,7 @@ export default function Editor({ document, onChange }) {
       axiosInstance
         .put(`edit/`+ localStorage.getItem("postID") +`/`, {
             title: localStorage.getItem("postTitle"),
-            description: JSON.stringify(document),
+            description: JSON.stringify(doc),
             author: userId,
         })
         .then((res) => {
@@ -50,7 +59,7 @@ export default function Editor({ document, onChange }) {
       axiosInstance
         .post(`create/`, {
             title: text,
-            description: JSON.stringify(document),
+            description: JSON.stringify(doc),
             author: userId,
         })
         .then((res) => {
@@ -63,8 +72,7 @@ export default function Editor({ document, onChange }) {
 
   return (
     <View style={styles.container}>
-      <Slate editor={editor} value={document} onChange={onChangeHandler}>
-        
+      <Slate editor={editor} value={doc} onChange={onChangeHandler}>
         <Toolbar selection={selection} />
 
         <ScrollView style={styles.editor}>        

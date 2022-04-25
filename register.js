@@ -29,9 +29,9 @@ export default function Register({ mode }) {
               </View>
               <View style={styles.line}></View>
               <Text style={{marginBottom: '1em', color: "#9a73ef"}}>Please enter an Email, Username and Password to Register.</Text>
-              <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeEmail} value={email} />
-              <TextInput style={styles.input} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} />
-              <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
+              <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Email" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeEmail} value={email} />
+              <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} />
+              <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
               <Pressable style={styles.button} onPress={ (event) => {event.preventDefault(); register(); }}><Text style={{textAlign: 'center'}}>Register</Text></Pressable>         
           </View>
       </View>

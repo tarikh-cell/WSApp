@@ -5,6 +5,7 @@ import { Dimensions } from 'react-native-web';
 import {
   LineChart,
   BarChart,
+  ProgressChart,
 
 } from 'react-native-chart-kit';
 import axiosInstance from '../../axios';
@@ -24,14 +25,40 @@ export default function Profile() {
 
   useEffect(() => {
     if (localStorage.getItem('loggedIn') === 'true'){
-      axiosInstance.get('https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/user/use/').then((res) => setUserId(res.data.ID));
-      axiosInstance.get('https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/productivity/get/').then((res) => {onChangeDates( dts => [...dts, res.data[0].date]); onChangeTimes( tms => [...tms, res.data[0].duration]);});
+      axiosInstance.get('https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/user/use/').then((res) => setUserId(res.data.ID));      
+      axiosInstance.get('https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/productivity/get/').then((res) => {onChangeDates(refactor(res.data)); onChangeTimes(refactor2(res.data));});
+      console.log(dates);
     }
   }, [])
 
-  function saveNote(){
-    localStorage.setItem("notes", text);
-  }
+  function refactor(dates){
+      let d = [];
+      for(let i = 0; i < dates.length; i++){
+        d.push(dates[i].date);
+      }
+      return d;
+    }
+
+    function refactor2(dates){
+      let d = [];
+      for(let i = 0; i < dates.length; i++){
+        d.push(dates[i].duration);
+      }
+      return d;
+    }
+
+  // function refactor(){
+  //   let d = [];
+  //   for(let i = 0; i < dates[0].length; i++){
+  //     d.push(dates[0][i].date);
+  //   }
+  //   onChangeDates(d);
+  //   let x = [];
+  //   for(let i = 0; i < times[0].length; i++){
+  //     x.push(times[0][i].duration);
+  //   }
+  //   onChangeTimes(x);
+  // }
 
   function getNote(){
     if (localStorage.getItem("notes")){
@@ -42,18 +69,19 @@ export default function Profile() {
 
   return (
       <View style={styles.container}>
-        <Toolbar />
+        
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Text style={{fontSize: '30px', margin: '1%'}}>Account Overview</Text>  
           <Text style={{textAlign: 'right', margin: '1%'}}>{new Date().toDateString()}</Text>
         </View>
-
-        <View style={styles.note}>
+        <Toolbar />
+        {/* <View style={styles.note}>
           <Text style={styles.title}>Notes:</Text>
           <TextInput style={styles.input} placeholder="Notes" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeText} value={text} />
-          <Pressable style={{alignSelf: 'center'}} onPress={ (event) => {event.preventDefault(); saveNote();}}><Text>Save</Text></Pressable>
-        </View>  
-
+          
+        </View>   */}
+        <Text>Your application usage history.</Text>
+<Pressable style={{alignSelf: 'center'}} onPress={ (event) => {event.preventDefault(); refactor();}}><Text>Save</Text></Pressable>
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
         
           <LineChart
@@ -79,8 +107,7 @@ export default function Profile() {
               marginVertical: 8,
               borderRadius: 16
             }}
-          />
-          
+          />          
         </View>
       </View>
   );
@@ -100,8 +127,9 @@ function Toolbar() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    width: '97%',
+    width: '100%',
     height: '100%',
+    padding: '1em',
   },
   profile: {
     borderRightWidth: '1px',
@@ -119,10 +147,10 @@ const styles = StyleSheet.create({
       padding: '1px',
   },
   toolbar: {
-    borderBottomWidth: '1px',
+    // borderBottomWidth: '1px',
     borderColor: '#D8BFD8',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    // justifyContent: 'flex-end',
     height: '8%'
   },
 });

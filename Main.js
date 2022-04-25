@@ -17,7 +17,7 @@ export default function Main (props){
 
     return (
         <>
-            <Editor document={document} onChange={updateDocument} />   
+            <Editor doc={document} onChange={updateDocument} />   
         </>
     );
     

@@ -36,8 +36,8 @@ export default function Login({ mode }) {
             </View>
             <View style={styles.line}></View>
             <Text style={{marginBottom: '1em', color: "#9a73ef"}}>Please enter your username and password to login.</Text>
-            <TextInput style={styles.input} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} /> 
-            <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
+            <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} /> 
+            <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
             <Pressable style={styles.button} onPress={ (event) => {event.preventDefault(); handleClick(user, pass); }}><Text style={{textAlign: 'center', color: 'white'}}>LogIn</Text></Pressable>
             <Text style={{color: mode ? 'white' : 'black'}}>Don't have an account? <Link to="/Register">Register</Link> here.</Text>         
           </View>
