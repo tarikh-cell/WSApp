@@ -101,10 +101,11 @@ export default function Timer() {
     }
 
     return(
-        <View style={styles.container}>
+        <View style={[styles.container, {margin: start ? '2em' : '5em'}]}>
             
-            { start ? <Text style={styles.input}>Timer: {checkTimeLeft()}{secs}</Text> : 
+            { start ? <Text style={[styles.input, {fontSize: '50px', opacity: 0.1}]}>{checkTimeLeft()}{secs}</Text> : 
             <>
+                <Text>Timer:</Text>
                 <View style={{flexDirection: 'row'}}>
                     <TextInput style={styles.input} placeholder="Hours" placeholderTextColor="#9a73ef" onChangeText={setHour} value={hour} />
                     <TextInput style={styles.input} placeholder="Mins" placeholderTextColor="#9a73ef" onChangeText={setMinute} value={minute} />
@@ -118,11 +119,12 @@ export default function Timer() {
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: '8px',
-        borderWidth: '1px',
-        borderColor: 'lightgrey',
+        // borderRadius: '8px',
+        // borderWidth: '1px',
+        // borderColor: 'lightgrey',
         height: '20%',
         marginTop: '5%',
+        // margin: '5em',
     },
     input: {
         width: '5em',

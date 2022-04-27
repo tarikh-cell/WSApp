@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, TextInput } from 'react-native';
+import { Pressable, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Dimensions } from 'react-native-web';
 import {
   LineChart,
@@ -27,7 +27,6 @@ export default function Profile() {
     if (localStorage.getItem('loggedIn') === 'true'){
       axiosInstance.get('https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/user/use/').then((res) => setUserId(res.data.ID));      
       axiosInstance.get('https://django-psql-persistent-workspace.apps.kube.eecs.qmul.ac.uk/api/productivity/get/').then((res) => {onChangeDates(refactor(res.data)); onChangeTimes(refactor2(res.data));});
-      console.log(dates);
     }
   }, [])
 
@@ -67,6 +66,21 @@ export default function Profile() {
     return "";
   }
 
+  function ListItem(props){
+    const { id, date, time } = props;
+    const [hover, setHover] = useState( false );
+    return(
+      <View style={{flexDirection: 'row', width: '70%', justifyContent: 'space-between', borderBottomWidth: 0.1, borderColor: 'lightgrey', padding: '1em', backgroundColor: hover ? '#D8BFD8' : '#fff'}}>
+        <TouchableOpacity style={{width: '95%', flexDirection: 'row'}} onPress={(event) => {event.preventDefault(); }} onMouseEnter={() => {setHover(true)}} onMouseLeave={() => setHover(false)} >
+          <Text style={[styles.text, {width: '20%'}]}>{id}</Text>
+          <Text style={[styles.text, {width: '55%'}]}>{date}</Text>
+          <Text style={[styles.text, {width: '20%'}]}>{time}</Text>
+        </TouchableOpacity>
+        <Pressable style={{width: '10%'}} onPress={(event) => {event.preventDefault();}}></Pressable>
+      </View>
+    );
+  }
+
   return (
       <View style={styles.container}>
         
@@ -81,7 +95,6 @@ export default function Profile() {
           
         </View>   */}
         <Text>Your application usage history.</Text>
-<Pressable style={{alignSelf: 'center'}} onPress={ (event) => {event.preventDefault(); refactor();}}><Text>Save</Text></Pressable>
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
         
           <LineChart
@@ -109,6 +122,17 @@ export default function Profile() {
             }}
           />          
         </View>
+        <View style={{alignItems: 'center'}}>
+        <View style={{flexDirection: 'row', width: '70%', justifyContent: 'space-between', padding: '1em', backgroundColor: '#fff', borderTopStartRadius: '5px'}}>
+              <Text style={[styles.text, {width: '20%'}]}>Id</Text>
+              <Text style={[styles.text, {width: '50%'}]}>Date</Text>
+              <Text style={[styles.text, {width: '20%'}]}>Time</Text>
+              <Text style={{color: 'white', width: '10%'}}></Text>
+            </View>
+        {dates.map((values, index) => (
+              <ListItem key={index} id={index} date={dates[index]} time={times[index]} />
+            ))}
+            </View>
       </View>
   );
 }

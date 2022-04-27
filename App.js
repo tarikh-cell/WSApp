@@ -15,6 +15,7 @@ import NavBar from './src/components/NavBar';
 export default function App() {
   const [dark, setDark] = useState(getMode());
   const [open, setOpen] = useState(false);
+  const [nav, setNav] = useState(true);
 
   const [loaded] = useFonts({
     Arial: require('./assests/fonts/arial.ttf'),
@@ -38,6 +39,14 @@ export default function App() {
     return(
       <Pressable onPress={() => {localStorage.setItem("DarkMode", !dark); setDark(!dark);}}>
           {dark ? <Feather name="moon" size={24} color="darkblue" /> : <Feather name="sun" size={24} color="yellow" />}
+      </Pressable>
+    );
+  }
+
+  function Close() {
+    return(
+      <Pressable style={{alignContent: 'flex-end'}} onPress={() => setNav(!nav)}>
+        <Feather name="x" size={24} color="darkblue" />
       </Pressable>
     );
   }
@@ -68,7 +77,7 @@ export default function App() {
           </View>
       </View>:null}
       <View style={[styles.container,{backgroundColor: dark ? "#A9A9A9" : '#F5F5F5'}]}>     
-        <NavBar mode={dark} modeButton={<Mode />} />
+        { nav ? <NavBar mode={dark} modeButton={<Mode />} closeButton={<Close />} /> : null}
         <View style={[styles.container,{backgroundColor: dark ? "#A9A9A9" : '#F5F5F5', justifyContent: 'center'}]}>
         <Routes>
           <Route path="/" element={<Main />} />

@@ -7,7 +7,7 @@ import axiosInstance from '../../axios';
 
 import { Feather } from '@expo/vector-icons';
 
-export default function NavBar({ mode, modeButton }) {
+export default function NavBar({ mode, modeButton, closeButton }) {
     const [ isLoggedIn, setLoggedIn ] = useState(null);
 
     useEffect( () => {
@@ -22,6 +22,7 @@ export default function NavBar({ mode, modeButton }) {
         { isLoggedIn === 'true' ?  <NavSlot path="/" icon="log-out" txt="LogOut" color={mode} onPress={ (event) => {event.preventDefault(); setLoggedIn(false); logout();}} /> : <></>}
         <NavSlot path="/" icon="layers" txt="Home" color={mode} />
         {modeButton}
+        {closeButton}
       </View>
     );
   }
@@ -45,6 +46,9 @@ export default function NavBar({ mode, modeButton }) {
     });
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('postTitle');
+    localStorage.removeItem('postID');
+    localStorage.removeItem('user');
     localStorage.setItem('loggedIn', false);
     axiosInstance.defaults.headers['Authorization'] = null;
     console.log(response);

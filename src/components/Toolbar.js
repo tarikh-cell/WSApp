@@ -13,7 +13,7 @@ const CHARACTER_SIZE = ["ten", "twelve", "fourteen", "sixteen", "eighteen", "twe
 const SIZE = ["10", "12", "14", "16", "18", "20", "22", "24", "32", "63", "128"];
 const FONTS = ["normal","serif", "Roboto", "Montserrat", "OpenSans", "Arial", "TimesNewRoman", "Calibri"];
 
-export default function Toolbar({ selection }) {
+export default function Toolbar({ downloadButton, selection }) {
   const editor = useSlateStatic();
   const [edit, setEdit] = useState("does it");
 
@@ -47,6 +47,7 @@ export default function Toolbar({ selection }) {
       <TouchableOpacity style={styles.circle} onPress={()=> exportHTML()}>
         <Foundation name="page-export-doc" size={24} color="black" />
       </TouchableOpacity>
+      {downloadButton}
     </View>
   );
 }
