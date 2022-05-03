@@ -1,13 +1,15 @@
 import React from 'react';
 import axiosInstance from './axios';
 import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function Register({ mode }) {
     const [email, onChangeEmail] = React.useState("");
     const [user, onChangeUser] = React.useState("");
     const [pass, onChangePass] = React.useState("");
+    const [error, setError] = React.useState(false);
+    let navigate = useNavigate();
     
     function register() {
       axiosInstance
@@ -18,7 +20,10 @@ export default function Register({ mode }) {
           })
           .then((res) => {
               console.log(res);
-          });
+              navigate("/Login");
+          }).catch((err) => {
+            setError(true);
+          });;;
     }
     
     return(
@@ -32,6 +37,7 @@ export default function Register({ mode }) {
               <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Email" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeEmail} value={email} />
               <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} />
               <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
+              { error ? <Text style={{color: 'red'}}>Invalid register details.</Text> : null}
               <Pressable style={styles.button} onPress={ (event) => {event.preventDefault(); register(); }}><Text style={{textAlign: 'center'}}>Register</Text></Pressable>         
           </View>
       </View>

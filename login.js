@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function Login({ mode }) {
     const [user, onChangeUser] = React.useState("");
     const [pass, onChangePass] = React.useState("");
+    const [error, setError] = React.useState(false);
     let navigate = useNavigate();
 
     async function handleClick(user, pass) {
@@ -23,9 +24,12 @@ export default function Login({ mode }) {
               axiosInstance.defaults.headers['Authorization'] =
                   'JWT ' + localStorage.getItem('access_token', res.data.access);
               console.log(res);
-              
+              setError(false);
               navigate("/");
-          });
+              location.reload();
+          }).catch((err) => {
+            setError(true);
+          });;
     }
   
     return (
@@ -39,6 +43,7 @@ export default function Login({ mode }) {
             <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Username" placeholderTextColor="#9a73ef" autoCorrect={false} onChangeText={onChangeUser} value={user} /> 
             <TextInput style={[styles.input,{color: mode ? 'white' : 'black'}]} placeholder="Password" placeholderTextColor="#9a73ef" secureTextEntry autoCorrect={false} onChangeText={onChangePass} value={pass} />
             <Pressable style={styles.button} onPress={ (event) => {event.preventDefault(); handleClick(user, pass); }}><Text style={{textAlign: 'center', color: 'white'}}>LogIn</Text></Pressable>
+            { error ? <Text style={{color: 'red'}}>Invalid authentication details.</Text> : null}
             <Text style={{color: mode ? 'white' : 'black'}}>Don't have an account? <Link to="/Register">Register</Link> here.</Text>         
           </View>
         </View>

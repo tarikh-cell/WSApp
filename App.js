@@ -45,8 +45,8 @@ export default function App() {
 
   function Close() {
     return(
-      <Pressable style={{alignContent: 'flex-end'}} onPress={() => setNav(!nav)}>
-        <Feather name="x" size={24} color="darkblue" />
+      <Pressable style={{alignContent: 'flex-end', position: 'absolute', bottom: 40, left: 10, zIndex: 3}} onPress={() => setNav(!nav)}>
+        { nav ? <Feather name="x" size={24} color="darkblue" /> : <Feather name="menu" size={24} color="darkblue" /> }
       </Pressable>
     );
   }
@@ -77,8 +77,9 @@ export default function App() {
           </View>
       </View>:null}
       <View style={[styles.container,{backgroundColor: dark ? "#A9A9A9" : '#F5F5F5'}]}>     
-        { nav ? <NavBar mode={dark} modeButton={<Mode />} closeButton={<Close />} /> : null}
-        <View style={[styles.container,{backgroundColor: dark ? "#A9A9A9" : '#F5F5F5', justifyContent: 'center'}]}>
+        { nav ? <NavBar mode={dark} modeButton={<Mode />} /> : null}
+        <Close />
+        <View style={[styles.container,{backgroundColor: dark ? "#A9A9A9" : '#F5F5F5', justifyContent: 'center'}]}>  
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="Profile" element={<Profile mode={dark} />} />
