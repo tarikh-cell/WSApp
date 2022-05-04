@@ -8,7 +8,6 @@ import { withHistory } from "slate-history";
 import Timer from "./Timer";
 import Toolbar from "./Toolbar";
 import useEditorConfig from "../utils/useEditorConfig";
-import useSelection from "../utils/useSelection";
 
 import { Link, useNavigate } from 'react-router-dom';
 let ScreenHeight = Dimensions.get("window").height;
@@ -16,7 +15,7 @@ let ScreenHeight = Dimensions.get("window").height;
 export default function Editor({ doc, onChange }) {
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
   const { renderElement, renderLeaf } = useEditorConfig(editor);
-  const [selection, setSelection] = useSelection(editor);
+  const [selection, setSelection] = useState(editor.selection);
   const [text, onChangeText] = useState(localStorage.getItem("postTitle"));
   const [userId, setUserId] = useState(null);
   const [open, setOpen] = useState(false);

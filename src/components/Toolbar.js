@@ -124,41 +124,6 @@ function dropdown(INITIAL_ARRAY, DISPLAY_ARRAY) {
   );
 }
 
-function SizeDropdown(props) {
-  const editor = useSlateStatic();
-  const [open, setOpen] = useState(true);
-  const { ARRAY, ARR, title } = props;
-  const style = Editor.marks(editor);
-
-    return(
-      <>
-        <Pressable style={{justifyContent: 'space-between', flexDirection: 'row'}} onPress={(event) => {event.preventDefault();setOpen(false);}}>
-          <Text style={styles.inner}>{getActiveSize(style, ARRAY)}</Text>
-          <Text style={styles.inner}></Text>
-          <AntDesign name="caretdown" size={15} color="black" />
-        </Pressable>
-
-        { open ? null : <View style={{zIndex: 2, position: 'absolute', left: 21}}>
-          <Pressable style={{marginVertical: '1em', justifyContent: 'center'}} onPress={(event) => {event.preventDefault();setOpen(true);}}>
-            <Text style={styles.inner}>{title}</Text>
-            <AntDesign name="caretdown" size={15} color="black" />
-          </Pressable>
-          {ARRAY.map((style, index) => (
-            <Font
-              key={style}
-              isActive={false}
-              title={ARR[index]}
-              onPress={(event) => {
-                event.preventDefault();
-                toggleColor(editor, style, ARRAY);
-              }}
-            />
-          ))}
-        </View> }
-      </>
-    );
-}
-
 export function toggleBlockType(editor, blockType) {
   const currentBlockType = getTextBlockStyle(editor);
   const changeTo = currentBlockType === blockType ? "paragraph" : blockType;
@@ -198,16 +163,6 @@ export function getTextBlockStyle(editor) {
   return blockType;
 }
 
-
-function Font(props) {
-  const { icon, isActive, title, ...otherProps } = props;
-  return(
-    <Pressable style={{alignItems: 'center', marginVertical: '2px'}} {...otherProps}>
-      <Text style={{fontSize: '10px'}}>{title}</Text>
-    </Pressable>
-  );
-}
-
 function IconSlot(props) {
   const { icon, isActive, title, ...otherProps } = props;
   return(
@@ -221,15 +176,6 @@ function Nob(props) {
   const { icon,  title, ...otherProps } = props;
   return(
     <Pressable style={[styles.container, {backgroundColor: title, opacity: 0.5}]} {...otherProps}>
-    </Pressable>
-  );
-}
-
-function TextSlot(props) {
-  const { icon, isActive, title, ...otherProps } = props;
-  return(
-    <Pressable {...otherProps}>
-      <Text style={styles.inner}>{title}</Text>
     </Pressable>
   );
 }

@@ -23,7 +23,7 @@ export default function Register({ mode }) {
               navigate("/Login");
           }).catch((err) => {
             setError(true);
-          });;;
+          });
     }
     
     return(
